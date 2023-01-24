@@ -24,6 +24,14 @@ public class TaskRepository implements Repository<Task>{
 
     @Override
     public Task get(int id) {
+        if(!tasksById.containsKey(id)){
+            throw new IllegalStateException();
+        }
+
         return tasksById.get(id);
+    }
+    @Override
+     public Map<Integer, Task> getAllItems() {
+        return tasksById;
     }
 }
