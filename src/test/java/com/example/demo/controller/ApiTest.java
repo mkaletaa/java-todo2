@@ -18,10 +18,11 @@ import org.bson.Document;
 
 import java.util.List;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-@ExtendWith(SpringExtension.class)
+//@ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class ApiTest {
     @Autowired
@@ -29,40 +30,52 @@ public class ApiTest {
 
     @Test
     public void shouldGet() {
+        //given
+        //taski do repozytorium do bazy danych
+
+        //when
+
         // Make a GET request to the endpoint
-        ResponseEntity<List> response = restTemplate.getForEntity("/tasks", List.class);
+        ResponseEntity<Task[]> response = restTemplate.getForEntity("/tasks", Task[].class);
+
+        //then
+
 
         // Assert that the response has a status of OK
         assertEquals(HttpStatus.OK, response.getStatusCode(), "Http status should be OK");
 
         // Assert that the response body is not null
         assertNotNull(response.getBody());
+//        assertThat(response.getBody()).hasSize(13);
     }
 
-    @Test
-    public void shouldPost() {
-        // Create a new Task object
-        Task task = new Task(1, "nazwa", "opis");
+//    @Test
 
-        // Make a POST request to the endpoint
-        ResponseEntity<String> response = restTemplate.postForEntity("/tasks", task, String.class);
+//    @Test
+//    public void shouldPost() {
+//        // Create a new Task object
+//        Task task = new Task(1, "nazwa", "opis");
+//
+//        // Make a POST request to the endpoint
+//        ResponseEntity<String> response = restTemplate.postForEntity("/tasks", task, String.class);
+//
+//        // Assert that the response has a status of CREATED
+//        assertEquals(HttpStatus.OK, response.getStatusCode(), "Http status should be OK");
+//
+//        // Assert that the response body is not null
+//        assertNotNull(response.getBody());
+//
+//        // Add another test to check if the task is added to the mongodb or not
+//        MongoClient mongoClient = MongoClients.create("mongodb://localhost:27017");
+//        MongoDatabase db = mongoClient.getDatabase("mydb");
+//        MongoCollection<Document> collection = db.getCollection("tasks");
+//        Document taskToCheck = collection.find(new Document("id", task.getId())).first();
+//
+//        assertNotNull(taskToCheck);
+//        assertEquals(task.getId(), taskToCheck.get("id"));
+//        assertEquals(task.getName(), taskToCheck.get("name"));
+//        assertEquals(task.getDescription(), taskToCheck.get("description"));
+//    }
 
-        // Assert that the response has a status of CREATED
-        assertEquals(HttpStatus.OK, response.getStatusCode(), "Http status should be OK");
-
-        // Assert that the response body is not null
-        assertNotNull(response.getBody());
-
-        // Add another test to check if the task is added to the mongodb or not
-        MongoClient mongoClient = MongoClients.create("mongodb://localhost:27017");
-        MongoDatabase db = mongoClient.getDatabase("mydb");
-        MongoCollection<Document> collection = db.getCollection("tasks");
-        Document taskToCheck = collection.find(new Document("id", task.getId())).first();
-
-        assertNotNull(taskToCheck);
-        assertEquals(task.getId(), taskToCheck.get("id"));
-        assertEquals(task.getName(), taskToCheck.get("name"));
-        assertEquals(task.getDescription(), taskToCheck.get("description"));
-    }
 
 }

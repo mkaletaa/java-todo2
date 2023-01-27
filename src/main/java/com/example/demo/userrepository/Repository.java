@@ -1,4 +1,9 @@
 package com.example.demo.userrepository;
 
-public interface Repository {
+import com.example.demo.model.Task;
+
+import java.util.Map;
+
+public interface Repository<T> {
+    public Map<Integer, T> getUserTasks();
 }

@@ -3,8 +3,10 @@ package com.example.demo.repository;
 import com.example.demo.model.Task;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
+@org.springframework.stereotype.Repository
 public class TaskRepository implements Repository<Task>{
 
 
@@ -31,7 +33,7 @@ public class TaskRepository implements Repository<Task>{
         return tasksById.get(id);
     }
     @Override
-     public Map<Integer, Task> getAllItems() {
-        return tasksById;
+     public List<Task> getAllItems() {
+        return tasksById.values().stream().toList();
     }
 }

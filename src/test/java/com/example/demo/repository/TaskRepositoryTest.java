@@ -98,10 +98,5 @@ class TaskRepositoryTest {
         assertTrue(taskRepository.getAllItems().equals(allItems));
     }
 
-//    null, wszystkie taski w repozytorium, napisać do tego test, klasa User (id, name, listaTasków)
-//    repozytoium usera, klasa TaskService, która dodaje taska do danego usera
-//    Hello World controller, API do dodawania i pobierania taska, test rest template
-
-    //testy, wstrzykiwanie zależności, typy generyczne, hashCode()
 
 }

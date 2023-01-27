@@ -1,41 +1,38 @@
 package com.example.demo.controller;
 
-import com.mongodb.MongoWriteException;
-import com.mongodb.client.*;
-import org.bson.Document;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
-
 import com.example.demo.model.Task;
+import com.example.demo.repository.TaskMongoRepository;
+import com.mongodb.MongoWriteException;
+import com.mongodb.client.MongoClient;
+import com.mongodb.client.MongoClients;
+import com.mongodb.client.MongoCollection;
+import com.mongodb.client.MongoDatabase;
+import org.bson.Document;
+import org.springframework.boot.SpringApplication;
+import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@SpringBootApplication
+//@SpringBootApplication
 public class Api {
+
+    private final TaskMongoRepository taskMongoRepository;
+
+    public Api(TaskMongoRepository taskMongoRepository) {
+        this.taskMongoRepository = taskMongoRepository;
+    }
+
     @CrossOrigin(origins = "http://localhost:3000/")
     @GetMapping("/tasks")
-    public List<Document> getTasks() {
+    public List<Task> getTasks() {
 
-        MongoClient mongoClient = MongoClients.create("mongodb://localhost:27017");
-        MongoDatabase db = mongoClient.getDatabase("mydb");
-        MongoCollection<Document> collection = db.getCollection("tasks");
-
-        FindIterable<Document> documents = collection.find();
-        List<Document> taskList = new ArrayList<>();
-
-        for (Document doc : documents) {
-            taskList.add(doc);
-        }
-
-        return taskList;
+        return taskMongoRepository.getAllItems();
     }
 
     @CrossOrigin(origins = "http://localhost:3000/")
     @PostMapping("/tasks")
-    public String addTask(@RequestBody Task task) {
+    public Task addTask(@RequestBody Task task) {
 
         MongoClient mongoClient = MongoClients.create("mongodb://localhost:27017");
         MongoDatabase db = mongoClient.getDatabase("mydb");
@@ -52,7 +49,8 @@ public class Api {
             e.printStackTrace();
         }
 
-        return "Post request";
+//        return "Post request";
+        return task;
     }
 
     public static void main(String[] args) {
