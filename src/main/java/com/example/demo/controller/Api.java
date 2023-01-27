@@ -8,13 +8,11 @@ import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import org.bson.Document;
-import org.springframework.boot.SpringApplication;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-//@SpringBootApplication
 public class Api {
 
     private final TaskMongoRepository taskMongoRepository;
@@ -49,12 +47,11 @@ public class Api {
             e.printStackTrace();
         }
 
-//        return "Post request";
         return task;
     }
 
-    public static void main(String[] args) {
-        SpringApplication.run(Api.class, args);
-    }
+//    public static void main(String[] args) {
+//        SpringApplication.run(Api.class, args);
+//    }
 }
 
