@@ -4,8 +4,7 @@ import com.example.demo.model.Task;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
@@ -17,9 +16,10 @@ class TaskRepositoryTest {
     @Nested
     class TestAdd {
         @Test
-        void shouldAddItemWhenNotNull () {
+        void shouldAddItemWhenNotNull() {
             // given
-            Task task = new Task(1, "test", "TEST");
+            UUID task1Id = UUID.fromString("e499b5df-e341-41c5-bf7a-06bc9c9bc4e9");
+            Task task = new Task(task1Id, "test", "TEST");
             // when
             taskRepository.add(task);
             // then
@@ -27,7 +27,7 @@ class TaskRepositoryTest {
         }
 
         @Test
-        void shouldAddItemWhenNull () {
+        void shouldAddItemWhenNull() {
             // given
             Task task = null;
 
@@ -51,51 +51,60 @@ class TaskRepositoryTest {
         @Test
         public void shouldGetWhenValidId() {
             //given
-            Task task = new Task(1, "test", "TEST");
+            UUID task1Id = UUID.fromString("e499b5df-e341-41c5-bf7a-06bc9c9bc4e9");
+            Task task = new Task(task1Id, "test", "TEST");
             //when
             taskRepository.add(task);
-            taskRepository.get(1);
+            taskRepository.get(task1Id);
             //then
-            assertTrue(taskRepository.get(1).equals(task));
+            assertTrue(taskRepository.get(task1Id).equals(task));
         }
 
         @Test
-        public void shouldGetWhenInvalidId() {
+        public void shouldGetWhenNonExistingId() {
             //given
-            Task task = new Task(1, "test", "TEST");
-
-//        try{
-//        // when
-//            taskRepository.add(task);
-//            taskRepository.get(2);
-//        } catch(IllegalStateException e){
-//        // then
-//        assertThrows(IllegalStateException.class,()-> taskRepository.get(2));
-//        }
-
+            UUID task1Id = UUID.fromString("e499b5df-e341-41c5-bf7a-06bc9c9bc4e9");
+            UUID nonExistingId = UUID.fromString("f499b5df-e341-41c5-bf7a-06bc9c9bc4e9");
+            Task task = new Task(task1Id, "test", "TEST");
             //when
             taskRepository.add(task);
             // then
-            assertThatThrownBy(() -> taskRepository.get(2))
+            assertThatThrownBy(() -> taskRepository.get(nonExistingId))
                     .isInstanceOf(IllegalStateException.class);
         }
+
+        @Test
+        public void shouldGetWhenNull() {
+            //given
+            UUID task1Id = UUID.fromString("e499b5df-e341-41c5-bf7a-06bc9c9bc4e9");
+            Task task = new Task(task1Id, "test", "TEST");
+            //when
+            taskRepository.add(task);
+            // then
+            assertThatThrownBy(() -> taskRepository.get(null))
+                    .isInstanceOf(IllegalStateException.class);
+        }
+
     }
+
 
     @Test
     public void shouldGetAllItems() {
         //given
-        Task task1 = new Task(1, "Task 1", "Test 1");
-        Task task2 = new Task(2, "Task 2", "Test 2");
-        Map<Integer, Task> allItems = new HashMap<>();
-
-        //when
-        allItems.put(1, task1);
-        allItems.put(2, task2);
+        UUID task1Id = UUID.fromString("e499b5df-e341-41c5-bf7a-06bc9c9bc4e9");
+        Task task1 = new Task(task1Id, "Task 1", "Test 1");
+        UUID task2Id = UUID.fromString("9c80a36a-07a7-4004-81f6-6fa8bcee1d7c");
+        Task task2 = new Task(task2Id, "Task 2", "Test 2");
         taskRepository.add(task1);
         taskRepository.add(task2);
 
+        //when
+        List<Task> allItems = taskRepository.getAllItems();
+
         //then
-        assertTrue(taskRepository.getAllItems().equals(allItems));
+        assertEquals(2, allItems.size());
+        assertTrue(allItems.contains(task1));
+        assertTrue(allItems.contains(task2));
     }
 
 

@@ -5,14 +5,15 @@ import com.example.demo.model.Task;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 @org.springframework.stereotype.Repository
 public class TaskRepository implements Repository<Task>{
 
 
-    Map<Integer, Task> tasksById;
+    Map<UUID, Task> tasksById;
     public TaskRepository() {
-        this.tasksById = new HashMap<Integer, Task>();
+        this.tasksById = new HashMap<UUID, Task>();
     }
 
     @Override
@@ -25,7 +26,7 @@ public class TaskRepository implements Repository<Task>{
     }
 
     @Override
-    public Task get(int id) {
+    public Task get(UUID id) {
         if(!tasksById.containsKey(id)){
             throw new IllegalStateException();
         }

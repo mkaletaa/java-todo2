@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
+import java.util.UUID;
 
 @Service
 public class TaskService {
@@ -21,8 +22,8 @@ public class TaskService {
         this.userRepository = userRepository;
     }
 
-    public void addTaskToUser(int userId, Task task) {
-        Map<Integer, Task> userTasks = userRepository.getUserTasks();
+    public void addTaskToUser(UUID userId, Task task) {
+        Map<UUID, Task> userTasks = userRepository.getUserTasks();
         userTasks.put(task.getId(), task);
     }
 }

@@ -4,14 +4,15 @@ import com.example.demo.model.Task;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 @org.springframework.stereotype.Repository
 public class UserRepository implements Repository<Task>{
-    Map<Integer, Task> userTasks = new HashMap<>();
+    Map<UUID, Task> userTasks = new HashMap<>();
 
 
     @Override
-    public Map<Integer, Task> getUserTasks() {
+    public Map<UUID, Task> getUserTasks() {
         return userTasks;
     }
 }

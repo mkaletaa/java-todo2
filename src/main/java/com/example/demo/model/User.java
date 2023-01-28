@@ -4,10 +4,10 @@ import java.util.*;
 
 public class User {
     private String name;
-    private int id;
+    private UUID id;
     private Map<Integer, Task> taskList = new HashMap<>();
 
-    public User(String name, int id, Map<Integer, Task> taskList) {
+    public User(String name, UUID id, Map<Integer, Task> taskList) {
         this.name = name;
         this.id = id;
         this.taskList = taskList;
@@ -30,7 +30,7 @@ public class User {
         return name;
     }
 
-    public int getId() {
+    public UUID getId() {
         return id;
     }
 

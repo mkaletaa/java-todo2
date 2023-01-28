@@ -1,13 +1,14 @@
 package com.example.demo.model;
 
 import java.util.Objects;
+import java.util.UUID;
 
 public class Task {
-    private final int id;
+    private final UUID id;
     private final String name;
     private final String description;
 
-    public Task(int id, String name, String description) {
+    public Task(UUID id, String name, String description) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -26,7 +27,7 @@ public class Task {
         return Objects.hash(id, name, description);
     }
 
-    public int getId() {
+    public UUID getId() {
         return id;
     }
 

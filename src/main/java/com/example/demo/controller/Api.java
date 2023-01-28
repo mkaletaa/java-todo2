@@ -11,6 +11,7 @@ import org.bson.Document;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.UUID;
 
 @RestController
 public class Api {
@@ -29,23 +30,24 @@ public class Api {
     }
 
     @CrossOrigin(origins = "http://localhost:3000/")
+    @GetMapping("/tasks/id/{id}")
+    public Task getSingleTaskById(@PathVariable UUID id) {
+
+        return taskMongoRepository.getSingleTaskById(id);
+    }
+
+    @CrossOrigin(origins = "http://localhost:3000/")
+    @GetMapping("/tasks/{nr}")
+    public Task getSingleTask(@PathVariable int nr) {
+
+        return taskMongoRepository.getSingleTask(nr);
+    }
+
+    @CrossOrigin(origins = "http://localhost:3000/")
     @PostMapping("/tasks")
     public Task addTask(@RequestBody Task task) {
 
-        MongoClient mongoClient = MongoClients.create("mongodb://localhost:27017");
-        MongoDatabase db = mongoClient.getDatabase("mydb");
-        MongoCollection<Document> collection = db.getCollection("tasks");
-
-
-        Document document = new Document("id", task.getId())
-                .append("name", task.getName())
-                .append("description", task.getDescription());
-
-        try {
-            collection.insertOne(document);
-        } catch (MongoWriteException e) {
-            e.printStackTrace();
-        }
+        taskMongoRepository.add(task);
 
         return task;
     }
