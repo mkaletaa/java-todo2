@@ -2,12 +2,6 @@ package com.example.demo.controller;
 
 import com.example.demo.model.Task;
 import com.example.demo.repository.TaskMongoRepository;
-import com.mongodb.MongoWriteException;
-import com.mongodb.client.MongoClient;
-import com.mongodb.client.MongoClients;
-import com.mongodb.client.MongoCollection;
-import com.mongodb.client.MongoDatabase;
-import org.bson.Document;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -33,14 +27,14 @@ public class Api {
     @GetMapping("/tasks/id/{id}")
     public Task getSingleTaskById(@PathVariable UUID id) {
 
-        return taskMongoRepository.getSingleTaskById(id);
+        return taskMongoRepository.getTaskById(id);
     }
 
     @CrossOrigin(origins = "http://localhost:3000/")
-    @GetMapping("/tasks/{nr}")
-    public Task getSingleTask(@PathVariable int nr) {
+    @GetMapping("/tasks/{index}")
+    public Task getSingleTask(@PathVariable int index) {
 
-        return taskMongoRepository.getSingleTask(nr);
+        return taskMongoRepository.getTaskByIndex(index);
     }
 
     @CrossOrigin(origins = "http://localhost:3000/")

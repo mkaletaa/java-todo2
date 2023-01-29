@@ -30,7 +30,7 @@ public class ApiTest {
     private TestRestTemplate restTemplate;
 
     @Test
-    public void shouldGet() {
+    public void shouldGetTasks() {
         //given
         //taski do repozytorium do bazy danych
 
@@ -49,6 +49,39 @@ public class ApiTest {
 //        assertThat(response.getBody()).hasSize(13);
     }
 
+    @Test
+    public void shouldGetTaskById(){
+        //given
+        String id = "e499b5df-e341-41c5-bf7a-06bc9c9bc4e9";
+
+        //when
+        ResponseEntity<Task> response = restTemplate.getForEntity("/tasks/id/"+id, Task.class);
+
+        //then
+
+        // Assert that the response has a status of OK
+        assertEquals(HttpStatus.OK, response.getStatusCode(), "Http status should be OK");
+
+        // Assert that the response body is not null
+        assertNotNull(response.getBody());
+    }
+
+    @Test
+    public void shouldGetTaskByIndex(){
+        //given
+        String index = "2";
+
+        //when
+        ResponseEntity<Task> response = restTemplate.getForEntity("/tasks/"+index, Task.class);
+
+        //then
+
+        // Assert that the response has a status of OK
+        assertEquals(HttpStatus.OK, response.getStatusCode(), "Http status should be OK");
+
+        // Assert that the response body is not null
+        assertNotNull(response.getBody());
+    }
 
 
     @Test

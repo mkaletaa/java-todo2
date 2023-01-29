@@ -23,7 +23,7 @@ class TaskRepositoryTest {
             // when
             taskRepository.add(task);
             // then
-            assertEquals(task, taskRepository.get(task.getId()));
+            assertEquals(task, taskRepository.getTaskById(task.getId()));
         }
 
         @Test
@@ -47,44 +47,82 @@ class TaskRepositoryTest {
     }
 
     @Nested
-    class TestGet {
-        @Test
-        public void shouldGetWhenValidId() {
-            //given
-            UUID task1Id = UUID.fromString("e499b5df-e341-41c5-bf7a-06bc9c9bc4e9");
-            Task task = new Task(task1Id, "test", "TEST");
-            //when
-            taskRepository.add(task);
-            taskRepository.get(task1Id);
-            //then
-            assertTrue(taskRepository.get(task1Id).equals(task));
+    class TestGetSingleTask {
+
+        @Nested
+        class TestGetById {
+            @Test
+            public void shouldGetWhenValidId() {
+                //given
+                UUID task1Id = UUID.fromString("e499b5df-e341-41c5-bf7a-06bc9c9bc4e9");
+                Task task = new Task(task1Id, "test", "TEST");
+                //when
+                taskRepository.add(task);
+                taskRepository.getTaskById(task1Id);
+                //then
+                assertTrue(taskRepository.getTaskById(task1Id).equals(task));
+            }
+
+            @Test
+            public void shouldGetWhenNonExistingId() {
+                //given
+                UUID task1Id = UUID.fromString("e499b5df-e341-41c5-bf7a-06bc9c9bc4e9");
+                UUID nonExistingId = UUID.fromString("f499b5df-e341-41c5-bf7a-06bc9c9bc4e9");
+                Task task = new Task(task1Id, "test", "TEST");
+                //when
+                taskRepository.add(task);
+//                taskRepository.getSingleTaskById(nonExistingId);
+
+                // then
+                assertThatThrownBy(() -> taskRepository.getTaskById(nonExistingId))
+                        .isInstanceOf(IllegalStateException.class);
+            }
+
+            @Test
+            public void shouldGetWhenNull() {
+                //given
+                UUID task1Id = UUID.fromString("e499b5df-e341-41c5-bf7a-06bc9c9bc4e9");
+                Task task = new Task(task1Id, "test", "TEST");
+                //when
+                taskRepository.add(task);
+
+                // then
+                assertThatThrownBy(() -> taskRepository.getTaskById(null))
+                        .isInstanceOf(IllegalStateException.class);
+            }
+
         }
 
-        @Test
-        public void shouldGetWhenNonExistingId() {
-            //given
-            UUID task1Id = UUID.fromString("e499b5df-e341-41c5-bf7a-06bc9c9bc4e9");
-            UUID nonExistingId = UUID.fromString("f499b5df-e341-41c5-bf7a-06bc9c9bc4e9");
-            Task task = new Task(task1Id, "test", "TEST");
-            //when
-            taskRepository.add(task);
-            // then
-            assertThatThrownBy(() -> taskRepository.get(nonExistingId))
-                    .isInstanceOf(IllegalStateException.class);
-        }
+        @Nested
+        class TestGetByIndex{
+            @Test
+            public void shouldGetWhenValidIndex(){
+                //given
+                int nr = 1;
+                UUID task1Id = UUID.fromString("e499b5df-e341-41c5-bf7a-06bc9c9bc4e9");
+                Task task = new Task(task1Id, "test", "TEST");
+                //when
+                taskRepository.add(task);
+                //then
+                assertTrue(taskRepository.getTaskByIndex(nr).equals(task));
+//                assertThatThrownBy(() -> taskRepository.getSingleTask(nr))
+//                        .isInstanceOf(IllegalStateException.class);
 
-        @Test
-        public void shouldGetWhenNull() {
-            //given
-            UUID task1Id = UUID.fromString("e499b5df-e341-41c5-bf7a-06bc9c9bc4e9");
-            Task task = new Task(task1Id, "test", "TEST");
-            //when
-            taskRepository.add(task);
-            // then
-            assertThatThrownBy(() -> taskRepository.get(null))
-                    .isInstanceOf(IllegalStateException.class);
-        }
+            }
+            @Test
+            public void shouldGetWhenInvalidIndex(){
+                //given
+                int nr = 2;
+                UUID task1Id = UUID.fromString("e499b5df-e341-41c5-bf7a-06bc9c9bc4e9");
+                Task task = new Task(task1Id, "test", "TEST");
+                //when
+                taskRepository.add(task);
+                //then
+                assertThatThrownBy(() -> taskRepository.getTaskByIndex(nr))
+                        .isInstanceOf(IllegalStateException.class);
 
+            }
+        }
     }
 
 

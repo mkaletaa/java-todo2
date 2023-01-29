@@ -8,8 +8,9 @@ import java.util.UUID;
 public interface Repository<T> {
 
     void add(T item);
-    T get(UUID id);
+    T getTaskById(UUID id);
 
+    T getTaskByIndex(int nr);
     List<T> getAllItems();
 
 }

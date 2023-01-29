@@ -3,13 +3,11 @@ package com.example.demo.repository;
 import com.example.demo.model.Task;
 import com.mongodb.MongoWriteException;
 import com.mongodb.client.*;
-import org.bson.Document;
 import com.mongodb.client.model.Filters;
-
+import org.bson.Document;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 @org.springframework.stereotype.Repository
@@ -22,8 +20,8 @@ public class TaskMongoRepository implements Repository<Task> {
 
 
 
-//    @Override
-    public Task getSingleTaskById(UUID id) {
+    @Override
+    public Task getTaskById(UUID id) {
         MongoCollection<Document> collection = database.getCollection("tasks");
 
 //        Document document = collection.find().skip(nr-1).first();
@@ -31,8 +29,8 @@ public class TaskMongoRepository implements Repository<Task> {
         Task task = new Task(document.get("id", UUID.class), document.get("name", String.class), document.get("description", String.class));
         return task;
     }
-
-    public Task getSingleTask(int nr) {
+    @Override
+    public Task getTaskByIndex(int nr) {
         MongoCollection<Document> collection = database.getCollection("tasks");
 
         Document document = collection.find().skip(nr-1).first();
@@ -41,7 +39,7 @@ public class TaskMongoRepository implements Repository<Task> {
         return task;
     }
 
-    @Override
+//    @Override
     public Task get(UUID id){
         return null;
     }
