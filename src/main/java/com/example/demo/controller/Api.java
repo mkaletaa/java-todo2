@@ -16,28 +16,33 @@ public class Api {
         this.taskMongoRepository = taskMongoRepository;
     }
 
-    @CrossOrigin(origins = "http://localhost:3000/")
+    @CrossOrigin(origins = "http://127.0.0.1:5173/")
     @GetMapping("/tasks")
     public List<Task> getTasks() {
 
         return taskMongoRepository.getAllItems();
     }
 
-    @CrossOrigin(origins = "http://localhost:3000/")
+    @CrossOrigin(origins = "http://127.0.0.1:5173/")
     @GetMapping("/tasks/id/{id}")
     public Task getSingleTaskById(@PathVariable UUID id) {
 
         return taskMongoRepository.getTaskById(id);
     }
 
-    @CrossOrigin(origins = "http://localhost:3000/")
+    @CrossOrigin(origins = "http://127.0.0.1:5173/")
     @GetMapping("/tasks/{index}")
     public Task getSingleTask(@PathVariable int index) {
 
         return taskMongoRepository.getTaskByIndex(index);
     }
 
-    @CrossOrigin(origins = "http://localhost:3000/")
+//    class AnotherContainer {
+//        private final int id = 2;
+//        private final String name;
+//    }
+
+    @CrossOrigin(origins = "http://127.0.0.1:5173/")
     @PostMapping("/tasks")
     public Task addTask(@RequestBody Task task) {
 
