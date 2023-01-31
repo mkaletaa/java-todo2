@@ -4,12 +4,12 @@ import java.util.Objects;
 import java.util.UUID;
 
 public class Task {
-    private final UUID id;
+    private  UUID id;
     private final String name;
     private final String description;
 
-    public Task(UUID id, String name, String description) {
-        this.id = id;
+    public Task(UUID id = , String name, String description) {
+//        this.id = id;
         this.name = name;
         this.description = description;
     }
