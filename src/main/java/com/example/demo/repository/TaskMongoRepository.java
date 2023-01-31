@@ -1,5 +1,6 @@
 package com.example.demo.repository;
 
+import com.example.demo.controller.Api;
 import com.example.demo.model.Task;
 import com.mongodb.MongoWriteException;
 import com.mongodb.client.*;
@@ -64,7 +65,7 @@ public class TaskMongoRepository implements Repository<Task> {
         MongoCollection<Document> collection = db.getCollection("tasks");
 
 
-        Document document = new Document("id", UUID.randomUUID())
+        Document document = new Document("id", task.getId())
                 .append("name", task.getName())
                 .append("description", task.getDescription());
 

@@ -37,11 +37,6 @@ public class Api {
         return taskMongoRepository.getTaskByIndex(index);
     }
 
-//    class AnotherContainer {
-//        private final int id = 2;
-//        private final String name;
-//    }
-
     @CrossOrigin(origins = "http://127.0.0.1:5173/")
     @PostMapping("/tasks")
     public Task addTask(@RequestBody Task task) {
@@ -50,9 +45,5 @@ public class Api {
 
         return task;
     }
-
-//    public static void main(String[] args) {
-//        SpringApplication.run(Api.class, args);
-//    }
 }
 

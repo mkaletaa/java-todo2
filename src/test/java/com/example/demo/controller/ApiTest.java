@@ -52,7 +52,7 @@ public class ApiTest {
     @Test
     public void shouldGetTaskById(){
         //given
-        String id = "e499b5df-e341-41c5-bf7a-06bc9c9bc4e9";
+        String id = "85be177f-5e63-44b5-bddc-894d15a4d26e";
 
         //when
         ResponseEntity<Task> response = restTemplate.getForEntity("/tasks/id/"+id, Task.class);
