@@ -13,4 +13,6 @@ public interface Repository<T> {
     T getTaskByIndex(int nr);
     List<T> getAllItems();
 
+    void delete(UUID id);
+
 }

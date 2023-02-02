@@ -2,6 +2,8 @@ package com.example.demo.controller;
 
 import com.example.demo.model.Task;
 import com.example.demo.repository.TaskMongoRepository;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -45,5 +47,14 @@ public class Api {
 
         return task;
     }
+    @CrossOrigin(origins = "http://127.0.0.1:5173/")
+    @DeleteMapping("/tasks/id/{id}")
+    public ResponseEntity<Void> deleteTask(@PathVariable UUID id) {
+
+        taskMongoRepository.delete(id);
+
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
 }
 

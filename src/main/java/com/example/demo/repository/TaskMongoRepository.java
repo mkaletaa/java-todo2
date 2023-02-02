@@ -1,5 +1,6 @@
 package com.example.demo.repository;
 
+import ch.qos.logback.classic.util.LogbackMDCAdapter;
 import com.example.demo.controller.Api;
 import com.example.demo.model.Task;
 import com.mongodb.MongoWriteException;
@@ -74,6 +75,12 @@ public class TaskMongoRepository implements Repository<Task> {
         } catch (MongoWriteException e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public void delete(UUID id){
+        MongoCollection<Document> collection = database.getCollection("tasks");
+        collection.deleteOne(Filters.eq("id", id));
     }
 
 }

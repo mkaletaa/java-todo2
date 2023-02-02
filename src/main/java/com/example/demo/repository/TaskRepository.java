@@ -52,4 +52,9 @@ public class TaskRepository implements Repository<Task>{
      public List<Task> getAllItems() {
         return tasksById.values().stream().toList();
     }
+
+    @Override
+    public void delete(UUID id) {
+
+    }
 }
