@@ -20,7 +20,19 @@ public class TaskMongoRepository implements Repository<Task> {
         this.database = mongoClient.getDatabase("mydb");
     }
 
+    @Override
+    public List<Task> getAllItems() {
+        MongoCollection<Document> collection = database.getCollection("tasks");
 
+        FindIterable<Document> documents = collection.find();
+        List<Task> taskList = new ArrayList<>();
+
+        for (Document doc : documents) {
+            taskList.add(new Task(doc.get("id", UUID.class), doc.get("name", String.class), doc.get("description", String.class)));
+        }
+
+        return taskList;
+    }
 
     @Override
     public Task getTaskById(UUID id) {
@@ -44,19 +56,6 @@ public class TaskMongoRepository implements Repository<Task> {
 //    @Override
     public Task get(UUID id){
         return null;
-    }
-    @Override
-    public List<Task> getAllItems() {
-        MongoCollection<Document> collection = database.getCollection("tasks");
-
-        FindIterable<Document> documents = collection.find();
-        List<Task> taskList = new ArrayList<>();
-
-        for (Document doc : documents) {
-            taskList.add(new Task(doc.get("id", UUID.class), doc.get("name", String.class), doc.get("description", String.class)));
-        }
-
-        return taskList;
     }
 
     @Override
