@@ -10,7 +10,7 @@ public class Task {
     private final String name;
     private final String description;
 
-
+//dodać userID
     public Task(UUID id, String name, String description) {
         this.id = id;
         this.name = name;

@@ -22,8 +22,8 @@ public class TaskService {
         this.userRepository = userRepository;
     }
 
-    public void addTaskToUser(UUID userId, Task task) {
-        Map<UUID, Task> userTasks = userRepository.getUserTasks();
-        userTasks.put(task.getId(), task);
-    }
+//    public void addTaskToUser(UUID userId, Task task) {
+//        Map<UUID, Task> userTasks = userRepository.getUserTasks();
+//        userTasks.put(task.getId(), task);
+//    }
 }

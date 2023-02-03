@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.*;
+import org.springframework.test.context.ActiveProfiles;
 
 import java.util.UUID;
 
@@ -20,6 +21,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
+@ActiveProfiles(value="prod")
 public class ApiTest {
     @Autowired
     private TestRestTemplate restTemplate;
@@ -36,8 +38,8 @@ public class ApiTest {
         for (String s : idArray) {
             UUID taskId = UUID.fromString(s);
             Task task = new Task(taskId, "GetTest", "get all tasks");
-            restTemplate.postForEntity("/tasks", task, String.class);
-//            taskMongoRepository.add(task);
+//            restTemplate.postForEntity("/tasks", task, String.class);
+            taskMongoRepository.add(task);
         }
 
         //when

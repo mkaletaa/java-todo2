@@ -7,6 +7,7 @@ import com.mongodb.MongoWriteException;
 import com.mongodb.client.*;
 import com.mongodb.client.model.Filters;
 import org.bson.Document;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,8 +17,9 @@ import java.util.UUID;
 public class TaskMongoRepository implements Repository<Task> {
     private final MongoDatabase database;
 
-    public TaskMongoRepository(MongoClient mongoClient) {
-        this.database = mongoClient.getDatabase("mydb");
+    @Autowired
+    public TaskMongoRepository(MongoDatabase mongoDatabase) {
+        this.database = mongoDatabase;
     }
 
     @Override
