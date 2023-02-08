@@ -18,4 +18,4 @@ public class UserRepository implements Repository<User>{
     }
 }
 
-//TODO repozutrium dla userów (name, surname, pesel, id)
+//TODO repozutrium dla userów (name, surname, id)

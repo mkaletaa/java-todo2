@@ -28,16 +28,16 @@ public class Api {
     }
 
     @CrossOrigin(origins = "http://127.0.0.1:5173/")
-    @GetMapping("/tasks/id/{id}")
+    @GetMapping("/tasks/{id}")
     public Task getSingleTaskById(@PathVariable UUID id) {
-//tasks/{id}
+
         return taskMongoRepository.getTaskById(id);
     }
 
     @CrossOrigin(origins = "http://127.0.0.1:5173/")
-    @GetMapping("/tasks/{index}")
+    @GetMapping("/tasks/index/{index}")
     public Task getSingleTask(@PathVariable int index) {
-//tasks/index/{index}
+
         return taskMongoRepository.getTaskByIndex(index);
     }
 
@@ -51,9 +51,9 @@ public class Api {
         return task;
     }
     @CrossOrigin(origins = "http://127.0.0.1:5173/")
-    @DeleteMapping("/tasks/id/{id}")
+    @DeleteMapping("/tasks/{id}")
     public ResponseEntity<Void> deleteTask(@PathVariable UUID id) {
-//tasks/{id}
+
         taskMongoRepository.delete(id);
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);

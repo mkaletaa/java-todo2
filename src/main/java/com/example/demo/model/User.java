@@ -4,11 +4,13 @@ import java.util.*;
 
 public class User {
     private String name;
+    private String surname;
     private UUID id;
     private Map<Integer, Task> taskList = new HashMap<>();
 
-    public User(String name, UUID id, Map<Integer, Task> taskList) {
+    public User(String name, String surname, UUID id, Map<Integer, Task> taskList) {
         this.name = name;
+        this.surname = surname;
         this.id = id;
         this.taskList = taskList;
     }

@@ -43,6 +43,7 @@ public class TaskMongoRepository implements Repository<Task> {
 //        Document document = collection.find().skip(nr-1).first();
         Document document = collection.find(Filters.eq("id", id)).first();
         Task task = new Task(document.get("id", UUID.class), document.get("name", String.class), document.get("description", String.class));
+        System.out.println(task);
         return task;
     }
     @Override
@@ -83,5 +84,11 @@ public class TaskMongoRepository implements Repository<Task> {
         MongoCollection<Document> collection = database.getCollection("tasks");
         collection.deleteOne(Filters.eq("id", id));
     }
+
+    //not for production
+    public void deteleAll(){
+
+    }
+
 
 }
