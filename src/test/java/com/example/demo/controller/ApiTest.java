@@ -21,7 +21,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@ActiveProfiles(value="prod")
+@ActiveProfiles(value="test")
 public class ApiTest {
     @Autowired
     private TestRestTemplate restTemplate;
@@ -151,7 +151,4 @@ public class ApiTest {
 
 
 }
-
-//czy dodawać i usuwać w BeforeEach/After
-//jak zrobić żeby  w testach dodawało do innej bazy
-//czy wysoływać metodę taskMongoRepository.xxx czy odwoływać się do endpointów
+//
