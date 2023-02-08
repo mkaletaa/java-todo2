@@ -17,6 +17,10 @@ import java.util.UUID;
 public class TaskMongoRepository implements Repository<Task> {
     private final MongoDatabase database;
 
+    public MongoDatabase getDatabase() {
+        return database;
+    }
+
     @Autowired
     public TaskMongoRepository(MongoDatabase mongoDatabase) {
         this.database = mongoDatabase;
@@ -40,7 +44,6 @@ public class TaskMongoRepository implements Repository<Task> {
     public Task getTaskById(UUID id) {
         MongoCollection<Document> collection = database.getCollection("tasks");
 
-//        Document document = collection.find().skip(nr-1).first();
         Document document = collection.find(Filters.eq("id", id)).first();
         Task task = new Task(document.get("id", UUID.class), document.get("name", String.class), document.get("description", String.class));
         System.out.println(task);
@@ -56,17 +59,10 @@ public class TaskMongoRepository implements Repository<Task> {
         return task;
     }
 
-//    @Override
-    public Task get(UUID id){
-        return null;
-    }
 
     @Override
     public void add(Task task) {
-        MongoClient mongoClient = MongoClients.create("mongodb://localhost:27017");
-        MongoDatabase db = mongoClient.getDatabase("mydb");
-        MongoCollection<Document> collection = db.getCollection("tasks");
-
+        MongoCollection<Document> collection = database.getCollection("tasks");
 
         Document document = new Document("id", task.getId())
                 .append("name", task.getName())
@@ -86,8 +82,9 @@ public class TaskMongoRepository implements Repository<Task> {
     }
 
     //not for production
-    public void deteleAll(){
-
+    public void deleteAll(){
+        MongoCollection<Document> collection = database.getCollection("tasks");
+        collection.deleteMany(new Document());
     }
 
 

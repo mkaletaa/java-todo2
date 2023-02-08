@@ -7,6 +7,7 @@ import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import org.bson.Document;
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -28,6 +29,19 @@ public class ApiTest {
 
     @Autowired
     private TaskMongoRepository taskMongoRepository;
+
+    @AfterEach
+    public void deleteAll(){
+        taskMongoRepository.deleteAll();
+        ////
+//        MongoCollection<Document> collection = taskMongoRepository.getDatabase().getCollection("tasks");
+//        collection.deleteMany(new Document());
+        ////
+//        MongoClient mongoClient = MongoClients.create("mongodb://localhost:27017");
+//        MongoDatabase database = mongoClient.getDatabase("mydbtest");
+//        MongoCollection<Document> collection = database.getCollection("tasks");
+//        collection.deleteMany(new Document());
+    }
 
     @Test
     public void shouldGetTasks() {
@@ -63,31 +77,18 @@ public class ApiTest {
         String id = "f1ecfecd-9e5b-4b5f-abc1-99978da78af1";
         UUID taskId = UUID.fromString(id);
         Task expectedTask = new Task(taskId, "GetTest", "get tasks by id");
-//        restTemplate.postForEntity("/tasks", task, String.class);
         taskMongoRepository.add(expectedTask);
-
 
         //when
         ResponseEntity<Task> response = restTemplate.getForEntity("/tasks/f1ecfecd-9e5b-4b5f-abc1-99978da78af1" , Task.class);
-        Task actualTask = taskMongoRepository.getTaskByIndex(1);
-//        Task actualTask = restTemplate.getForObject("/tasks/" + id, Task.class);
+        Task actualTask = taskMongoRepository.getTaskById(taskId);
+
         //then
-
-        System.out.println(actualTask);
-
-        assertEquals(expectedTask, actualTask);
+        assertEquals(expectedTask.getId(), actualTask.getId());
         // Assert that the response has a status of OK
-//        assertEquals(HttpStatus.OK, response.getStatusCode(), "Http status should be OK");
-
+        assertEquals(HttpStatus.OK, response.getStatusCode(), "Http status should be OK");
         // Assert that the response body is not null
-//        assertNotNull(response.getBody());
-
-////        delete a task
-//        HttpHeaders headers = new HttpHeaders();
-//        headers.setContentType(MediaType.APPLICATION_JSON);
-//        HttpEntity<String> entity = new HttpEntity<>(headers);
-//        ResponseEntity<Void> responseDel = restTemplate.exchange("/tasks/" + id, HttpMethod.DELETE, entity, Void.class);
-//        assertEquals(HttpStatus.NO_CONTENT, responseDel.getStatusCode());
+        assertNotNull(response.getBody());
     }
 
     @Test
