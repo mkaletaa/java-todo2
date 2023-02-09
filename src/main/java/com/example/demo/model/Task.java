@@ -12,18 +12,20 @@ public class Task {
     private UUID userId;
 
 
-    public Task(UUID id, String name, String description, UUID userId) {
-        this.id = id;
-        this.name = name;
-        this.description = description;
-        this.userId = userId;
-    }
+
 
     public Task(UUID id, String name, String description) {
         this.id = id;
         this.name = name;
         this.description = description;
     }
+
+//    public Task(UUID id, String name, String description, UUID userId) {
+//        this.id = id;
+//        this.name = name;
+//        this.description = description;
+//        this.userId = userId;
+//    }
 
     @Override
     public boolean equals(Object o) {

@@ -33,7 +33,7 @@ public class ApiTest {
 
     @AfterEach
     public void deleteAll(){
-//        taskMongoRepository.deleteAll();
+        taskMongoRepository.deleteAll();
         ////
 //        MongoCollection<Document> collection = taskMongoRepository.getDatabase().getCollection("tasks");
 //        collection.deleteMany(new Document());
@@ -69,7 +69,7 @@ public class ApiTest {
 
         // Assert that the response body is not null
         assertNotNull(response.getBody());
-//        assertThat(response.getBody()).hasSize(3);
+        assertThat(response.getBody()).hasSize(3);
     }
 
     @Test
