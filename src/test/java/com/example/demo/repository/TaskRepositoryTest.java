@@ -12,6 +12,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 class TaskRepositoryTest {
     private Repository<Task> taskRepository = new TaskRepository();
+    private UUID userId = UUID.fromString("181d0c94-ed96-41f9-9f76-8ceaa0ce59c2");
 
     @Nested
     class TestAdd {
@@ -19,7 +20,7 @@ class TaskRepositoryTest {
         void shouldAddItemWhenNotNull() {
             // given
             UUID task1Id = UUID.fromString("e499b5df-e341-41c5-bf7a-06bc9c9bc4e9");
-            Task task = new Task(task1Id, "test", "TEST");
+            Task task = new Task(task1Id, "test", "TEST", userId);
             // when
             taskRepository.add(task);
             // then
@@ -55,7 +56,7 @@ class TaskRepositoryTest {
             public void shouldGetWhenValidId() {
                 //given
                 UUID task1Id = UUID.fromString("e499b5df-e341-41c5-bf7a-06bc9c9bc4e9");
-                Task task = new Task(task1Id, "test", "TEST");
+                Task task = new Task(task1Id, "test", "TEST", userId);
                 //when
                 taskRepository.add(task);
                 taskRepository.getTaskById(task1Id);
@@ -68,7 +69,7 @@ class TaskRepositoryTest {
                 //given
                 UUID task1Id = UUID.fromString("e499b5df-e341-41c5-bf7a-06bc9c9bc4e9");
                 UUID nonExistingId = UUID.fromString("f499b5df-e341-41c5-bf7a-06bc9c9bc4e9");
-                Task task = new Task(task1Id, "test", "TEST");
+                Task task = new Task(task1Id, "test", "TEST", userId);
                 //when
                 taskRepository.add(task);
 //                taskRepository.getSingleTaskById(nonExistingId);
@@ -82,7 +83,7 @@ class TaskRepositoryTest {
             public void shouldGetWhenNull() {
                 //given
                 UUID task1Id = UUID.fromString("e499b5df-e341-41c5-bf7a-06bc9c9bc4e9");
-                Task task = new Task(task1Id, "test", "TEST");
+                Task task = new Task(task1Id, "test", "TEST", userId);
                 //when
                 taskRepository.add(task);
 
@@ -100,7 +101,7 @@ class TaskRepositoryTest {
                 //given
                 int nr = 1;
                 UUID task1Id = UUID.fromString("e499b5df-e341-41c5-bf7a-06bc9c9bc4e9");
-                Task task = new Task(task1Id, "test", "TEST");
+                Task task = new Task(task1Id, "test", "TEST", userId);
                 //when
                 taskRepository.add(task);
                 //then
@@ -114,7 +115,7 @@ class TaskRepositoryTest {
                 //given
                 int nr = 2;
                 UUID task1Id = UUID.fromString("e499b5df-e341-41c5-bf7a-06bc9c9bc4e9");
-                Task task = new Task(task1Id, "test", "TEST");
+                Task task = new Task(task1Id, "test", "TEST", userId);
                 //when
                 taskRepository.add(task);
                 //then
@@ -130,9 +131,9 @@ class TaskRepositoryTest {
     public void shouldGetAllItems() {
         //given
         UUID task1Id = UUID.fromString("e499b5df-e341-41c5-bf7a-06bc9c9bc4e9");
-        Task task1 = new Task(task1Id, "Task 1", "Test 1");
+        Task task1 = new Task(task1Id, "Task 1", "Test 1", userId);
         UUID task2Id = UUID.fromString("9c80a36a-07a7-4004-81f6-6fa8bcee1d7c");
-        Task task2 = new Task(task2Id, "Task 2", "Test 2");
+        Task task2 = new Task(task2Id, "Task 2", "Test 2", userId);
         taskRepository.add(task1);
         taskRepository.add(task2);
 
