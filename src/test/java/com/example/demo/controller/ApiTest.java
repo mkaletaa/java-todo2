@@ -17,6 +17,7 @@ import org.springframework.test.context.ActiveProfiles;
 
 import java.util.UUID;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
@@ -32,7 +33,7 @@ public class ApiTest {
 
     @AfterEach
     public void deleteAll(){
-        taskMongoRepository.deleteAll();
+//        taskMongoRepository.deleteAll();
         ////
 //        MongoCollection<Document> collection = taskMongoRepository.getDatabase().getCollection("tasks");
 //        collection.deleteMany(new Document());

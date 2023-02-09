@@ -9,14 +9,21 @@ public class Task {
     private final UUID id;
     private final String name;
     private final String description;
+    private UUID userId;
 
-//dodać userID
+
+    public Task(UUID id, String name, String description, UUID userId) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.userId = userId;
+    }
+
     public Task(UUID id, String name, String description) {
         this.id = id;
         this.name = name;
         this.description = description;
     }
-
 
     @Override
     public boolean equals(Object o) {
@@ -41,5 +48,8 @@ public class Task {
 
     public String getDescription() {
         return description;
+    }
+    public UUID getUserId() {
+        return userId;
     }
 }

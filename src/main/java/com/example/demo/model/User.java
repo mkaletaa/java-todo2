@@ -5,13 +5,13 @@ import java.util.*;
 public class User {
     private String name;
     private String surname;
-    private UUID id;
-    private Map<Integer, Task> taskList = new HashMap<>();
+    private UUID userId;
+    private Map<UUID, Task> taskList = new HashMap<>();
 
-    public User(String name, String surname, UUID id, Map<Integer, Task> taskList) {
+    public User(String name, String surname, UUID userId, Map<UUID, Task> taskList) {
         this.name = name;
         this.surname = surname;
-        this.id = id;
+        this.userId = userId;
         this.taskList = taskList;
     }
 
@@ -20,12 +20,12 @@ public class User {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         User user = (User) o;
-        return id == user.id && Objects.equals(name, user.name) && Objects.equals(taskList, user.taskList);
+        return userId == user.userId && Objects.equals(name, user.name) && Objects.equals(taskList, user.taskList);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, id, taskList);
+        return Objects.hash(name, userId, taskList);
     }
 
     public String getName() {
@@ -33,10 +33,10 @@ public class User {
     }
 
     public UUID getId() {
-        return id;
+        return userId;
     }
 
-    public Map<Integer, Task> getTaskList() {
+    public Map<UUID, Task> getTaskList() {
         return taskList;
     }
 }
