@@ -34,7 +34,7 @@ public class TaskMongoRepository implements Repository<Task> {
         List<Task> taskList = new ArrayList<>();
 
         for (Document doc : documents) {
-            taskList.add(new Task(doc.get("id", UUID.class), doc.get("name", String.class), doc.get("description", String.class)));
+            taskList.add(new Task(doc.get("id", UUID.class), doc.get("name", String.class), doc.get("description", String.class), doc.get("userId", UUID.class)));
         }
 
         return taskList;
@@ -45,7 +45,7 @@ public class TaskMongoRepository implements Repository<Task> {
         MongoCollection<Document> collection = database.getCollection("tasks");
 
         Document document = collection.find(Filters.eq("id", id)).first();
-        Task task = new Task(document.get("id", UUID.class), document.get("name", String.class), document.get("description", String.class));
+        Task task = new Task(document.get("id", UUID.class), document.get("name", String.class), document.get("description", String.class), document.get("userId", UUID.class));
         System.out.println(task);
         return task;
     }
@@ -55,7 +55,7 @@ public class TaskMongoRepository implements Repository<Task> {
 
         Document document = collection.find().skip(nr-1).first();
 //        Document document = collection.find(Filters.eq("id", id)).first();
-        Task task = new Task(document.get("id", UUID.class), document.get("name", String.class), document.get("description", String.class));
+        Task task = new Task(document.get("id", UUID.class), document.get("name", String.class), document.get("description", String.class), document.get("userId", UUID.class));
         return task;
     }
 
@@ -66,7 +66,8 @@ public class TaskMongoRepository implements Repository<Task> {
 
         Document document = new Document("id", task.getId())
                 .append("name", task.getName())
-                .append("description", task.getDescription());
+                .append("description", task.getDescription())
+                .append("userId", task.getUserId());
 
         try {
             collection.insertOne(document);

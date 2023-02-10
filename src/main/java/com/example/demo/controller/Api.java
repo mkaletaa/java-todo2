@@ -44,8 +44,8 @@ public class Api {
     @CrossOrigin(origins = "http://127.0.0.1:5173/")
     @PostMapping("/tasks")
     public Task addTask(@RequestBody TaskCreateRequestDTO taskBody) {
-
-        Task task = new Task(UUID.randomUUID(), taskBody.getName(), taskBody.getDescription());
+        UUID userId = UUID.fromString("181d0c94-ed96-41f9-9f76-8ceaa0ce59c2");
+        Task task = new Task(UUID.randomUUID(), taskBody.getName(), taskBody.getDescription(), userId);
         taskMongoRepository.add(task);
 
         return task;
@@ -61,4 +61,3 @@ public class Api {
 
 }
 
-//TODO taskresponse
