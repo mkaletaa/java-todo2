@@ -27,7 +27,7 @@ public class TaskRepository implements Repository<Task>{
     }
 
     @Override
-    public Task getTaskById(UUID id) {
+    public Task getItemById(UUID id) {
         if(!tasksById.containsKey(id)){
             throw new IllegalStateException();
         }
@@ -36,7 +36,7 @@ public class TaskRepository implements Repository<Task>{
     }
 
     @Override
-    public Task getTaskByIndex(int nr){
+    public Task getItemByIndex(int nr){
         List<Task> values = tasksById.entrySet().stream()
                 .map(entry -> entry.getValue())
                 .collect(Collectors.toList());

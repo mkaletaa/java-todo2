@@ -2,11 +2,6 @@ package com.example.demo.controller;
 
 import com.example.demo.model.Task;
 import com.example.demo.repository.TaskMongoRepository;
-import com.mongodb.client.MongoClient;
-import com.mongodb.client.MongoClients;
-import com.mongodb.client.MongoCollection;
-import com.mongodb.client.MongoDatabase;
-import org.bson.Document;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -124,10 +119,10 @@ public class ApiTest {
         //given
         String userId = "181d0c94-ed96-41f9-9f76-8ceaa0ce59c2";
         String id = "e499b5df-e341-41c5-bf7a-06bc9c9bc4e9";
-        UUID task1Id = UUID.fromString(id);
-        Task task = new Task(task1Id, "PostTestxxx", "post a task", UUID.fromString(userId));
+
+        TaskCreateRequestDTO task = new TaskCreateRequestDTO( "PostTestxxx", "post a task", userId);
         //when
-        ResponseEntity<String> response = restTemplate.postForEntity("/tasks", task, String.class);
+        ResponseEntity<TaskResponse> response = restTemplate.postForEntity("/tasks", task, TaskResponse.class);
 
         //then
         // Assert that the response has a status of CREATED
@@ -136,6 +131,8 @@ public class ApiTest {
         // Assert that the response body is not null
         assertNotNull(response.getBody());
 
+        assertThat(response.getBody().getName()).isEqualTo("PostTestxxx");
+        //TODO: czy id itp. nie jest nullem
     }
 
     @Test

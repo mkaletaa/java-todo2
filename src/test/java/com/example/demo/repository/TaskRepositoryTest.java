@@ -105,7 +105,7 @@ class TaskRepositoryTest {
                 //when
                 taskRepository.add(task);
                 //then
-                assertTrue(taskRepository.getTaskByIndex(nr).equals(task));
+                assertTrue(taskRepository.getItemByIndex(nr).equals(task));
 //                assertThatThrownBy(() -> taskRepository.getSingleTask(nr))
 //                        .isInstanceOf(IllegalStateException.class);
 
@@ -119,7 +119,7 @@ class TaskRepositoryTest {
                 //when
                 taskRepository.add(task);
                 //then
-                assertThatThrownBy(() -> taskRepository.getTaskByIndex(nr))
+                assertThatThrownBy(() -> taskRepository.getItemByIndex(nr))
                         .isInstanceOf(IllegalStateException.class);
 
             }

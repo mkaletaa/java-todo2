@@ -1,7 +1,5 @@
 package com.example.demo.repository;
 
-import ch.qos.logback.classic.util.LogbackMDCAdapter;
-import com.example.demo.controller.Api;
 import com.example.demo.model.Task;
 import com.mongodb.MongoWriteException;
 import com.mongodb.client.*;
@@ -41,7 +39,7 @@ public class TaskMongoRepository implements Repository<Task> {
     }
 
     @Override
-    public Task getTaskById(UUID id) {
+    public Task getItemById(UUID id) {
         MongoCollection<Document> collection = database.getCollection("tasks");
 
         Document document = collection.find(Filters.eq("id", id)).first();
@@ -50,7 +48,7 @@ public class TaskMongoRepository implements Repository<Task> {
         return task;
     }
     @Override
-    public Task getTaskByIndex(int nr) {
+    public Task getItemByIndex(int nr) {
         MongoCollection<Document> collection = database.getCollection("tasks");
 
         Document document = collection.find().skip(nr-1).first();
@@ -90,3 +88,4 @@ public class TaskMongoRepository implements Repository<Task> {
 
 
 }
+//TODO: UserMongoRepository

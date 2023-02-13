@@ -1,6 +1,5 @@
 package com.example.demo.controller;
 
-import java.util.Objects;
 import java.util.UUID;
 
 public class TaskCreateRequestDTO {
@@ -8,11 +7,12 @@ public class TaskCreateRequestDTO {
 
     private final String name;
     private final String description;
+    private final UUID userId;
 
-
-    public TaskCreateRequestDTO( String name, String description) {
+    public TaskCreateRequestDTO(String name, String description, UUID userId) {
         this.name = name;
         this.description = description;
+        this.userId = userId;
     }
 
 
@@ -22,5 +22,9 @@ public class TaskCreateRequestDTO {
 
     public String getDescription() {
         return description;
+    }
+
+    public UUID getUserId() {
+        return userId;
     }
 }

@@ -11,12 +11,12 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-public class Api {
+public class TaskController {
 
     private final TaskMongoRepository taskMongoRepository;
 
     @Autowired
-    public Api(TaskMongoRepository taskMongoRepository) {
+    public TaskController(TaskMongoRepository taskMongoRepository) {
         this.taskMongoRepository = taskMongoRepository;
     }
 
@@ -38,18 +38,28 @@ public class Api {
     @GetMapping("/tasks/index/{index}")
     public Task getSingleTask(@PathVariable int index) {
 
-        return taskMongoRepository.getTaskByIndex(index);
+        return taskMongoRepository.getItemByIndex(index);
     }
 
     @CrossOrigin(origins = "http://127.0.0.1:5173/")
     @PostMapping("/tasks")
-    public Task addTask(@RequestBody TaskCreateRequestDTO taskBody) {
+    public TaskResponse addTask(@RequestBody TaskCreateRequestDTO taskBody) {
         UUID userId = UUID.fromString("181d0c94-ed96-41f9-9f76-8ceaa0ce59c2");
         Task task = new Task(UUID.randomUUID(), taskBody.getName(), taskBody.getDescription(), userId);
         taskMongoRepository.add(task);
-
-        return task;
+        return toTaskResponse(task);
     }
+
+    @CrossOrigin(origins = "http://127.0.0.1:5173/")
+    @PostMapping("/tasks")
+    public TaskResponse addTask2(@RequestBody TaskCreateRequestDTO taskBody) {
+//        UUID userId = UUID.fromString("181d0c94-ed96-41f9-9f76-8ceaa0ce59c2");
+        Task task = new Task(UUID.randomUUID(), taskBody.getName(), taskBody.getDescription(), taskBody.getUserId());
+        taskMongoRepository.add(task);
+        return toTaskResponse(task);
+    }
+
+
     @CrossOrigin(origins = "http://127.0.0.1:5173/")
     @DeleteMapping("/tasks/{id}")
     public ResponseEntity<Void> deleteTask(@PathVariable UUID id) {
@@ -59,5 +69,16 @@ public class Api {
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
+    private static TaskResponse toTaskResponse(Task task) {
+        return new TaskResponse(task.getId(), task.getName(), task.getDescription());
+    }
+
+    /*
+    /books/{id}/authors
+    /user/{id}/basket/{id}/items
+    /books?author=mickiewicz&year=1850
+     */
+
+    //TODO: endpoint który zwraca wszystkie taski o danej nazwie + test
 }
 
