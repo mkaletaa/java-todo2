@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @RestController
 public class TaskController {
@@ -20,40 +21,63 @@ public class TaskController {
         this.taskMongoRepository = taskMongoRepository;
     }
 
-    @CrossOrigin(origins = "http://127.0.0.1:5173/")
-    @GetMapping("/tasks")
-    public List<Task> getTasks() {
 
-        return taskMongoRepository.getAllItems();
+    @CrossOrigin(origins = "http://127.0.0.1:5173/")
+    @GetMapping(value = "/tasks", params = {})
+    public List<TaskResponse> getTasks() {
+
+        return toTaskResponseList(taskMongoRepository.getAllItems());
     }
+
+    private static List<TaskResponse> toTaskResponseList(List<Task> taskList) {
+        return taskList.stream()
+                .map(task -> new TaskResponse(task.getId(), task.getName(), task.getDescription()))
+                .collect(Collectors.toList());
+    }
+
+
+    @CrossOrigin(origins = "http://127.0.0.1:5173/")
+    @GetMapping(value = "/tasks", params = "name")
+    public List<TaskResponse> getTasksByName(@RequestParam("name") String name) {
+
+        return toTaskResponseList2(taskMongoRepository.getAllItems(), name);
+    }
+
+    private static List<TaskResponse> toTaskResponseList2(List<Task> taskList, String name) {
+        System.out.println(name);
+        return taskList.stream()
+                .filter(task -> task.getName().equals(name))
+                .map(task -> new TaskResponse(task.getId(), task.getName(), task.getDescription()))
+                .collect(Collectors.toList());
+    }
+
 
     @CrossOrigin(origins = "http://127.0.0.1:5173/")
     @GetMapping("/tasks/{id}")
-    public Task getSingleTaskById(@PathVariable UUID id) {
+    public TaskResponse getSingleTaskById(@PathVariable UUID id) {
 
-        return taskMongoRepository.getTaskById(id);
+        return toTaskResponse(taskMongoRepository.getItemById(id));
     }
 
     @CrossOrigin(origins = "http://127.0.0.1:5173/")
-    @GetMapping("/tasks/index/{index}")
-    public Task getSingleTask(@PathVariable int index) {
+    @GetMapping(value="/tasks", params = "index")
+    public TaskResponse getSingleTask(@RequestParam("index") int index) {
 
-        return taskMongoRepository.getItemByIndex(index);
+        return toTaskResponse(taskMongoRepository.getItemByIndex(index));
     }
+
+//    @CrossOrigin(origins = "http://127.0.0.1:5173/")
+//    @PostMapping("/tasks")
+//    public TaskResponse addTask(@RequestBody TaskCreateRequestDTO taskBody) {
+//        UUID userId = UUID.fromString("181d0c94-ed96-41f9-9f76-8ceaa0ce59c2");
+//        Task task = new Task(UUID.randomUUID(), taskBody.getName(), taskBody.getDescription(), userId);
+//        taskMongoRepository.add(task);
+//        return toTaskResponse(task);
+//    }
 
     @CrossOrigin(origins = "http://127.0.0.1:5173/")
     @PostMapping("/tasks")
     public TaskResponse addTask(@RequestBody TaskCreateRequestDTO taskBody) {
-        UUID userId = UUID.fromString("181d0c94-ed96-41f9-9f76-8ceaa0ce59c2");
-        Task task = new Task(UUID.randomUUID(), taskBody.getName(), taskBody.getDescription(), userId);
-        taskMongoRepository.add(task);
-        return toTaskResponse(task);
-    }
-
-    @CrossOrigin(origins = "http://127.0.0.1:5173/")
-    @PostMapping("/tasks")
-    public TaskResponse addTask2(@RequestBody TaskCreateRequestDTO taskBody) {
-//        UUID userId = UUID.fromString("181d0c94-ed96-41f9-9f76-8ceaa0ce59c2");
         Task task = new Task(UUID.randomUUID(), taskBody.getName(), taskBody.getDescription(), taskBody.getUserId());
         taskMongoRepository.add(task);
         return toTaskResponse(task);
@@ -73,11 +97,7 @@ public class TaskController {
         return new TaskResponse(task.getId(), task.getName(), task.getDescription());
     }
 
-    /*
-    /books/{id}/authors
-    /user/{id}/basket/{id}/items
-    /books?author=mickiewicz&year=1850
-     */
+
 
     //TODO: endpoint który zwraca wszystkie taski o danej nazwie + test
 }

@@ -24,7 +24,7 @@ class TaskRepositoryTest {
             // when
             taskRepository.add(task);
             // then
-            assertEquals(task, taskRepository.getTaskById(task.getId()));
+            assertEquals(task, taskRepository.getItemById(task.getId()));
         }
 
         @Test
@@ -59,9 +59,9 @@ class TaskRepositoryTest {
                 Task task = new Task(task1Id, "test", "TEST", userId);
                 //when
                 taskRepository.add(task);
-                taskRepository.getTaskById(task1Id);
+                taskRepository.getItemById(task1Id);
                 //then
-                assertTrue(taskRepository.getTaskById(task1Id).equals(task));
+                assertTrue(taskRepository.getItemById(task1Id).equals(task));
             }
 
             @Test
@@ -75,7 +75,7 @@ class TaskRepositoryTest {
 //                taskRepository.getSingleTaskById(nonExistingId);
 
                 // then
-                assertThatThrownBy(() -> taskRepository.getTaskById(nonExistingId))
+                assertThatThrownBy(() -> taskRepository.getItemById(nonExistingId))
                         .isInstanceOf(IllegalStateException.class);
             }
 
@@ -88,7 +88,7 @@ class TaskRepositoryTest {
                 taskRepository.add(task);
 
                 // then
-                assertThatThrownBy(() -> taskRepository.getTaskById(null))
+                assertThatThrownBy(() -> taskRepository.getItemById(null))
                         .isInstanceOf(IllegalStateException.class);
             }
 

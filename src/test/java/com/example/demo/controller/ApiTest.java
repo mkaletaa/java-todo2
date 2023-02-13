@@ -10,9 +10,12 @@ import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.*;
 import org.springframework.test.context.ActiveProfiles;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
@@ -49,6 +52,30 @@ public class ApiTest {
         for (String s : idArray) {
             UUID taskId = UUID.fromString(s);
             Task task = new Task(taskId, "GetTest", "get all tasks", UUID.fromString(userId));
+            taskMongoRepository.add(task);
+        }
+
+        //when
+        ResponseEntity<Task[]> response = restTemplate.getForEntity("/tasks", Task[].class);
+
+        //then
+        assertEquals(HttpStatus.OK, response.getStatusCode(), "Http status should be OK");
+        assertNotNull(response.getBody());
+        assertThat(response.getBody()).hasSize(3);
+    }
+
+    @Test
+    public void shouldGetTasksByName() {
+        //given
+        String userId = "181d0c94-ed96-41f9-9f76-8ceaa0ce59c2";
+        String[][] idArray = {{"85be177f-5e63-44b5-bddc-894d15a4d26e", "test"},
+                {"bbdef43f-59a1-47fb-9804-f869e2614cbd", "test"},
+                {"74ad803c-d78f-4630-ae0c-7205cf5cb9c5", "xxx"}};
+
+        for (String[] s : idArray) {
+            UUID taskId = UUID.fromString(s[0]);
+            String name = s[1];
+            Task task = new Task(taskId, name, "get all tasks", UUID.fromString(userId));
 //            restTemplate.postForEntity("/tasks", task, String.class);
             taskMongoRepository.add(task);
         }
@@ -56,37 +83,41 @@ public class ApiTest {
         //when
 
         // Make a GET request to the endpoint
-        ResponseEntity<Task[]> response = restTemplate.getForEntity("/tasks", Task[].class);
+        ResponseEntity<Task[]> response = restTemplate.getForEntity("/tasks?name=test", Task[].class);
+        Task[] tasks = response.getBody();
+        List<String> taskNames = Arrays.stream(tasks)
+                .map(Task::getName)
+                .collect(Collectors.toList());
 
         //then
-
-        // Assert that the response has a status of OK
         assertEquals(HttpStatus.OK, response.getStatusCode(), "Http status should be OK");
-
-        // Assert that the response body is not null
         assertNotNull(response.getBody());
-        assertThat(response.getBody()).hasSize(3);
+        assertThat(response.getBody()).hasSize(2);
+        assertThat(taskNames.size()).isEqualTo(2);
+        assertThat(taskNames).doesNotContain("xxx");
     }
 
     @Test
     public void shouldGetTaskById() {
         //given
         String userId = "181d0c94-ed96-41f9-9f76-8ceaa0ce59c2";
-        String id = "f1ecfecd-9e5b-4b5f-abc1-99978da78af1";
-        UUID taskId = UUID.fromString(id);
-        Task expectedTask = new Task(taskId, "GetTest", "get tasks by id", UUID.fromString(userId));
+        UUID taskId = UUID.fromString("f1ecfecd-9e5b-4b5f-abc1-99978da78af1");
+        String name = "GetTest";
+        String description = "get tasks by id";
+        Task expectedTask = new Task(taskId, name, description, UUID.fromString(userId));
         taskMongoRepository.add(expectedTask);
 
         //when
-        ResponseEntity<Task> response = restTemplate.getForEntity("/tasks/f1ecfecd-9e5b-4b5f-abc1-99978da78af1" , Task.class);
-        Task actualTask = taskMongoRepository.getTaskById(taskId);
+        ResponseEntity<TaskResponse> response = restTemplate.getForEntity("/tasks/f1ecfecd-9e5b-4b5f-abc1-99978da78af1" , TaskResponse.class);
+        Task actualTask = taskMongoRepository.getItemById(taskId);
 
         //then
         assertEquals(expectedTask.getId(), actualTask.getId());
-        // Assert that the response has a status of OK
         assertEquals(HttpStatus.OK, response.getStatusCode(), "Http status should be OK");
-        // Assert that the response body is not null
         assertNotNull(response.getBody());
+        assertThat(response.getBody().getName()).isEqualTo(name);
+        assertThat(response.getBody().getDescription()).isEqualTo(description);
+        assertNotNull(response.getBody().getId());
     }
 
     @Test
@@ -94,45 +125,43 @@ public class ApiTest {
         //given
         String userId = "181d0c94-ed96-41f9-9f76-8ceaa0ce59c2";
         String index = "1";
-        String id = "85be177f-5e63-44b5-bddc-894d15a4d26e";
-        UUID task1Id = UUID.fromString(id);
-        Task task = new Task(task1Id, "GetTest", "get tasks by index", UUID.fromString(userId));
-        // Make a POST request to the endpoint
-//        restTemplate.postForEntity("/tasks", task, String.class);
+        UUID taskId = UUID.fromString("85be177f-5e63-44b5-bddc-894d15a4d26e");
+        String name = "GetTest";
+        String description = "get tasks by index";
+        Task task = new Task(taskId, name, description, UUID.fromString(userId));
         taskMongoRepository.add(task);
 
         //when
-        ResponseEntity<Task> response = restTemplate.getForEntity("/tasks/index/" + index, Task.class);
+        ResponseEntity<TaskResponse> response = restTemplate.getForEntity("/tasks?index=" + index, TaskResponse.class);
 
         //then
         System.out.println(response);
-        // Assert that the response has a status of OK
         assertEquals(HttpStatus.OK, response.getStatusCode(), "Http status should be OK");
-
-        // Assert that the response body is not null
         assertNotNull(response.getBody());
+        assertThat(response.getBody().getName()).isEqualTo(name);
+        assertThat(response.getBody().getDescription()).isEqualTo(description);
+        assertNotNull(response.getBody().getId());
     }
 
 
     @Test
     public void shouldPost() {
         //given
-        String userId = "181d0c94-ed96-41f9-9f76-8ceaa0ce59c2";
+        UUID userId = UUID.fromString("181d0c94-ed96-41f9-9f76-8ceaa0ce59c2");
         String id = "e499b5df-e341-41c5-bf7a-06bc9c9bc4e9";
+        String name = "PostTest";
+        String description = "post a task";
 
-        TaskCreateRequestDTO task = new TaskCreateRequestDTO( "PostTestxxx", "post a task", userId);
+        TaskCreateRequestDTO task = new TaskCreateRequestDTO( name, description, userId);
         //when
         ResponseEntity<TaskResponse> response = restTemplate.postForEntity("/tasks", task, TaskResponse.class);
 
         //then
-        // Assert that the response has a status of CREATED
         assertEquals(HttpStatus.OK, response.getStatusCode(), "Http status should be OK");
-
-        // Assert that the response body is not null
         assertNotNull(response.getBody());
-
-        assertThat(response.getBody().getName()).isEqualTo("PostTestxxx");
-        //TODO: czy id itp. nie jest nullem
+        assertThat(response.getBody().getName()).isEqualTo(name);
+        assertThat(response.getBody().getDescription()).isEqualTo(description);
+        assertNotNull(response.getBody().getId());
     }
 
     @Test
@@ -153,4 +182,3 @@ public class ApiTest {
 
 
 }
-//
