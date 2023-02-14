@@ -18,7 +18,7 @@ public class TaskRepository implements Repository<Task>{
     }
 
     @Override
-    public void add(Task item) {
+    public void addItem(Task item) {
         if(item==null){
             throw new IllegalStateException();
         }
@@ -54,7 +54,12 @@ public class TaskRepository implements Repository<Task>{
     }
 
     @Override
-    public void delete(UUID id) {
+    public void deleteItem(UUID id) {
+
+    }
+
+    @Override
+    public void updateItem(Task task) {
 
     }
 }

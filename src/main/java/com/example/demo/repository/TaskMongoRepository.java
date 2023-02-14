@@ -59,7 +59,7 @@ public class TaskMongoRepository implements Repository<Task> {
 
 
     @Override
-    public void add(Task task) {
+    public void addItem(Task task) {
         MongoCollection<Document> collection = database.getCollection("tasks");
 
         Document document = new Document("id", task.getId())
@@ -75,9 +75,14 @@ public class TaskMongoRepository implements Repository<Task> {
     }
 
     @Override
-    public void delete(UUID id){
+    public void deleteItem(UUID id){
         MongoCollection<Document> collection = database.getCollection("tasks");
         collection.deleteOne(Filters.eq("id", id));
+    }
+
+    @Override
+    public void updateItem(Task task) {
+
     }
 
     //not for production

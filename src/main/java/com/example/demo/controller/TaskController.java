@@ -26,10 +26,10 @@ public class TaskController {
     @GetMapping(value = "/tasks", params = {})
     public List<TaskResponse> getTasks() {
 
-        return toTaskResponseList(taskMongoRepository.getAllItems());
+        return toTaskListResponse(taskMongoRepository.getAllItems());
     }
 
-    private static List<TaskResponse> toTaskResponseList(List<Task> taskList) {
+    private static List<TaskResponse> toTaskListResponse(List<Task> taskList) {
         return taskList.stream()
                 .map(task -> new TaskResponse(task.getId(), task.getName(), task.getDescription()))
                 .collect(Collectors.toList());
@@ -79,7 +79,7 @@ public class TaskController {
     @PostMapping("/tasks")
     public TaskResponse addTask(@RequestBody TaskCreateRequestDTO taskBody) {
         Task task = new Task(UUID.randomUUID(), taskBody.getName(), taskBody.getDescription(), taskBody.getUserId());
-        taskMongoRepository.add(task);
+        taskMongoRepository.addItem(task);
         return toTaskResponse(task);
     }
 
@@ -88,7 +88,7 @@ public class TaskController {
     @DeleteMapping("/tasks/{id}")
     public ResponseEntity<Void> deleteTask(@PathVariable UUID id) {
 
-        taskMongoRepository.delete(id);
+        taskMongoRepository.deleteItem(id);
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
@@ -98,7 +98,5 @@ public class TaskController {
     }
 
 
-
-    //TODO: endpoint który zwraca wszystkie taski o danej nazwie + test
 }
 

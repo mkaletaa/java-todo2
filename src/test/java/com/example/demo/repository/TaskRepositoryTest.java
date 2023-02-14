@@ -22,7 +22,7 @@ class TaskRepositoryTest {
             UUID task1Id = UUID.fromString("e499b5df-e341-41c5-bf7a-06bc9c9bc4e9");
             Task task = new Task(task1Id, "test", "TEST", userId);
             // when
-            taskRepository.add(task);
+            taskRepository.addItem(task);
             // then
             assertEquals(task, taskRepository.getItemById(task.getId()));
         }
@@ -41,7 +41,7 @@ class TaskRepositoryTest {
 //        }
 
             // when, then
-            assertThatThrownBy(() -> taskRepository.add(task))
+            assertThatThrownBy(() -> taskRepository.addItem(task))
                     .isInstanceOf(IllegalStateException.class);
 
         }
@@ -58,7 +58,7 @@ class TaskRepositoryTest {
                 UUID task1Id = UUID.fromString("e499b5df-e341-41c5-bf7a-06bc9c9bc4e9");
                 Task task = new Task(task1Id, "test", "TEST", userId);
                 //when
-                taskRepository.add(task);
+                taskRepository.addItem(task);
                 taskRepository.getItemById(task1Id);
                 //then
                 assertTrue(taskRepository.getItemById(task1Id).equals(task));
@@ -71,7 +71,7 @@ class TaskRepositoryTest {
                 UUID nonExistingId = UUID.fromString("f499b5df-e341-41c5-bf7a-06bc9c9bc4e9");
                 Task task = new Task(task1Id, "test", "TEST", userId);
                 //when
-                taskRepository.add(task);
+                taskRepository.addItem(task);
 //                taskRepository.getSingleTaskById(nonExistingId);
 
                 // then
@@ -85,7 +85,7 @@ class TaskRepositoryTest {
                 UUID task1Id = UUID.fromString("e499b5df-e341-41c5-bf7a-06bc9c9bc4e9");
                 Task task = new Task(task1Id, "test", "TEST", userId);
                 //when
-                taskRepository.add(task);
+                taskRepository.addItem(task);
 
                 // then
                 assertThatThrownBy(() -> taskRepository.getItemById(null))
@@ -103,7 +103,7 @@ class TaskRepositoryTest {
                 UUID task1Id = UUID.fromString("e499b5df-e341-41c5-bf7a-06bc9c9bc4e9");
                 Task task = new Task(task1Id, "test", "TEST", userId);
                 //when
-                taskRepository.add(task);
+                taskRepository.addItem(task);
                 //then
                 assertTrue(taskRepository.getItemByIndex(nr).equals(task));
 //                assertThatThrownBy(() -> taskRepository.getSingleTask(nr))
@@ -117,7 +117,7 @@ class TaskRepositoryTest {
                 UUID task1Id = UUID.fromString("e499b5df-e341-41c5-bf7a-06bc9c9bc4e9");
                 Task task = new Task(task1Id, "test", "TEST", userId);
                 //when
-                taskRepository.add(task);
+                taskRepository.addItem(task);
                 //then
                 assertThatThrownBy(() -> taskRepository.getItemByIndex(nr))
                         .isInstanceOf(IllegalStateException.class);
@@ -134,8 +134,8 @@ class TaskRepositoryTest {
         Task task1 = new Task(task1Id, "Task 1", "Test 1", userId);
         UUID task2Id = UUID.fromString("9c80a36a-07a7-4004-81f6-6fa8bcee1d7c");
         Task task2 = new Task(task2Id, "Task 2", "Test 2", userId);
-        taskRepository.add(task1);
-        taskRepository.add(task2);
+        taskRepository.addItem(task1);
+        taskRepository.addItem(task2);
 
         //when
         List<Task> allItems = taskRepository.getAllItems();

@@ -9,7 +9,7 @@ import java.util.UUID;
 public class UserRepository implements Repository<User>{
 
     @Override
-    public void add(User item) {
+    public void addItem(User item) {
 
     }
 
@@ -29,7 +29,12 @@ public class UserRepository implements Repository<User>{
     }
 
     @Override
-    public void delete(UUID id) {
+    public void deleteItem(UUID id) {
+
+    }
+
+    @Override
+    public void updateItem(User item) {
 
     }
 }

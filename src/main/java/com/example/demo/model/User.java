@@ -6,9 +6,9 @@ public class User {
     private String name;
     private String surname;
     private UUID userId;
-    private Map<UUID, Task> taskList = new HashMap<>();
+    private List<Task> taskList = new ArrayList<>();
 
-    public User(String name, String surname, UUID userId, Map<UUID, Task> taskList) {
+    public User(String name, String surname, UUID userId, List<Task> taskList) {
         this.name = name;
         this.surname = surname;
         this.userId = userId;
@@ -32,11 +32,15 @@ public class User {
         return name;
     }
 
+    public String getSurname() {
+        return surname;
+    }
+
     public UUID getId() {
         return userId;
     }
 
-    public Map<UUID, Task> getTaskList() {
+    public List<Task> getTaskList() {
         return taskList;
     }
 }

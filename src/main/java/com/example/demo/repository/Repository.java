@@ -6,14 +6,16 @@ import java.util.UUID;
 
 public interface Repository<T> {
 
-    void add(T item);
+    void addItem(T item);
     T getItemById(UUID id);
 
     T getItemByIndex(int nr);
 
     List<T> getAllItems();
 
-    void delete(UUID id);
+    void deleteItem(UUID id);
+
+    void updateItem(T item);
 
 //TODO: update(item)
 

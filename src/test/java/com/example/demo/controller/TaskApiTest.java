@@ -22,7 +22,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles(value="test")
-public class ApiTest {
+public class TaskApiTest {
     @Autowired
     private TestRestTemplate restTemplate;
 
@@ -52,7 +52,7 @@ public class ApiTest {
         for (String s : idArray) {
             UUID taskId = UUID.fromString(s);
             Task task = new Task(taskId, "GetTest", "get all tasks", UUID.fromString(userId));
-            taskMongoRepository.add(task);
+            taskMongoRepository.addItem(task);
         }
 
         //when
@@ -77,7 +77,7 @@ public class ApiTest {
             String name = s[1];
             Task task = new Task(taskId, name, "get all tasks", UUID.fromString(userId));
 //            restTemplate.postForEntity("/tasks", task, String.class);
-            taskMongoRepository.add(task);
+            taskMongoRepository.addItem(task);
         }
 
         //when
@@ -105,7 +105,7 @@ public class ApiTest {
         String name = "GetTest";
         String description = "get tasks by id";
         Task expectedTask = new Task(taskId, name, description, UUID.fromString(userId));
-        taskMongoRepository.add(expectedTask);
+        taskMongoRepository.addItem(expectedTask);
 
         //when
         ResponseEntity<TaskResponse> response = restTemplate.getForEntity("/tasks/f1ecfecd-9e5b-4b5f-abc1-99978da78af1" , TaskResponse.class);
@@ -129,7 +129,7 @@ public class ApiTest {
         String name = "GetTest";
         String description = "get tasks by index";
         Task task = new Task(taskId, name, description, UUID.fromString(userId));
-        taskMongoRepository.add(task);
+        taskMongoRepository.addItem(task);
 
         //when
         ResponseEntity<TaskResponse> response = restTemplate.getForEntity("/tasks?index=" + index, TaskResponse.class);
