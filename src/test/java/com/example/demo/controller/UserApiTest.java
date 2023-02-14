@@ -69,7 +69,7 @@ public class UserApiTest {
         String surname = "Doe";
 //        UUID userId = UUID.fromString("181d0c94-ed96-41f9-9f76-8ceaa0ce59c2");
 
-        UserCreateRequestDTO user = new UserCreateRequestDTO( name, surname, null);
+        UserCreateRequestDTO user = new UserCreateRequestDTO( name, surname);
         //when
         ResponseEntity<UserResponse> response = restTemplate.postForEntity("/users", user, UserResponse.class);
 

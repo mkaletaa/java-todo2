@@ -6,12 +6,12 @@ import java.util.UUID;
 public class UserCreateRequestDTO {
     private final String name;
     private final String surname;
-    private final Map<UUID, String> taskList;
+//    private final Map<UUID, String> taskList;
 
-    public UserCreateRequestDTO(String name, String surname, Map<UUID, String> taskList) {
+    public UserCreateRequestDTO(String name, String surname) {
         this.name = name;
         this.surname = surname;
-        this.taskList = taskList;
+//        this.taskList = taskList;
     }
 
     public String getName() {
@@ -22,7 +22,7 @@ public class UserCreateRequestDTO {
         return surname;
     }
 
-    public Map<UUID, String> getTaskList() {
-        return taskList;
-    }
+//    public Map<UUID, String> getTaskList() {
+//        return taskList;
+//    }
 }

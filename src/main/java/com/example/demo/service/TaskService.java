@@ -1,37 +1,40 @@
-//package com.example.demo.service;
-//
-//import com.example.demo.model.Task;
-//import com.example.demo.model.User;
-//import com.example.demo.repository.TaskRepository;
-//import com.example.demo.userrepository.UserRepository;
-//import org.springframework.beans.factory.annotation.Autowired;
-//import org.springframework.stereotype.Service;
-//
-//import java.util.Map;
-//import java.util.UUID;
-//
-//@Service
-//public class TaskService {
-//    private final TaskRepository taskRepository;
-//    private final UserRepository userRepository;
-//
-//
-//
-//    @Autowired
-//    public TaskService(TaskRepository taskRepository, UserRepository userRepository) {
-//        this.taskRepository = taskRepository;
-//        this.userRepository = userRepository;
-//    }
-//
-//    public void addTaskToUser(UUID userId, Task task) {
-////        Map<UUID, Task> userTasks = userRepository.getUserTasks();
-////        userTasks.put(task.getId(), task);
-//
-//        User user = userRepository.getUsers().get(userId);
-//        if (user == null) {
-//            throw new IllegalStateException("User not found");
-//        }
-//
-//        userRepository.setUserTasks(task);
-//    }
-//}
+package com.example.demo.service;
+
+import com.example.demo.model.Task;
+import com.example.demo.model.User;
+import com.example.demo.repository.TaskMongoRepository;
+import com.example.demo.repository.UserMongoRepository;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.UUID;
+
+@Service
+public class TaskService {
+
+    private final UserMongoRepository userMongoRepository;
+//    private final TaskMongoRepository taskMongoRepository;
+
+    @Autowired
+    public TaskService(UserMongoRepository userMongoRepository) {
+        this.userMongoRepository = userMongoRepository;
+//        this.taskMongoRepository = taskMongoRepository;
+    }
+
+    public void addTaskToUser(Task task) {
+            User user = userMongoRepository.getItemById(task.getUserId());
+        if(user!=null) {
+            List<Task> userTasks = user.getTaskList();
+            userTasks.add(task);
+//TODO: test tej metody, throw zamist ifa i tworzenie usera W @Before
+            User updatedUser = new User(user.getName(), user.getSurname(), user.getId(), userTasks);
+            userMongoRepository.updateItem(updatedUser);
+        }
+    }
+
+    public void test(Task task){
+        System.out.println("Hello World");
+    }
+
+}

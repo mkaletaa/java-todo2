@@ -1,6 +1,7 @@
 package com.example.demo.repository;
 
 import com.example.demo.model.Task;
+import com.example.demo.service.TaskService;
 import com.mongodb.MongoWriteException;
 import com.mongodb.client.*;
 import com.mongodb.client.model.Filters;
@@ -14,14 +15,16 @@ import java.util.UUID;
 @org.springframework.stereotype.Repository
 public class TaskMongoRepository implements Repository<Task> {
     private final MongoDatabase database;
+    private final TaskService taskService;
 
     public MongoDatabase getDatabase() {
         return database;
     }
 
     @Autowired
-    public TaskMongoRepository(MongoDatabase mongoDatabase) {
+    public TaskMongoRepository(MongoDatabase mongoDatabase, TaskService taskService) {
         this.database = mongoDatabase;
+        this.taskService = taskService;
     }
 
     @Override
@@ -69,9 +72,18 @@ public class TaskMongoRepository implements Repository<Task> {
 
         try {
             collection.insertOne(document);
-        } catch (MongoWriteException e) {
+            taskService.addTaskToUser(task);
+            taskService.test(task);
+//            System.out.println(10/2);
+        }  catch (MongoWriteException e) {
             e.printStackTrace();
         }
+
+//        try{
+//            taskService.addTaskToUser(task);
+//        }  catch (MongoWriteException e) {
+//            e.printStackTrace();
+//        }
     }
 
     @Override

@@ -13,6 +13,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import static com.mongodb.client.model.Filters.eq;
+import static com.mongodb.client.model.Updates.combine;
+import static com.mongodb.client.model.Updates.set;
+
 @org.springframework.stereotype.Repository
 public class UserMongoRepository implements Repository<User> {
     private final MongoDatabase database;
@@ -75,6 +79,18 @@ public class UserMongoRepository implements Repository<User> {
 
     @Override
     public void updateItem(User user) {
+        // update every property of the user (name, surname, id, taskList)
+        MongoCollection<Document> collection = database.getCollection("users");
+//        collection.updateOne(eq("userId", user.getId()),
+//                combine(
+//                set("name", user.getName()),
+//                set("surname", user.getSurname()),
+//                set("userId", user.getId()),
+//                set("taskList", user.getTaskList())
+//                ));
+
+        collection.updateOne(eq("userId", user.getId()),
+                        set("taskList", user.getTaskList()));
 
     }
 

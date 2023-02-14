@@ -47,12 +47,13 @@ public class UserController {
         return toUserResponse(user);
     }
 
-    @CrossOrigin(origins = "http://127.0.0.1:5173/")
-    @PatchMapping("/users/{id}/tasks")
-    public UserResponse updateUserTasks(@RequestBody UserCreateRequestDTO taskBody) {
-
-        return null;
-    }
+//    @CrossOrigin(origins = "http://127.0.0.1:5173/")
+//    @PatchMapping("/users/{id}/tasks")
+//    public UserResponse updateUserTasks(@RequestBody UserCreateRequestDTO taskBody) {
+//
+//
+//        return null;
+//    }
 
     private static UserResponse toUserResponse(User user){
         return new UserResponse(user.getName(), user.getSurname());
