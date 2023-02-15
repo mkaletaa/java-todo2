@@ -5,13 +5,14 @@ import com.example.demo.model.User;
 import com.mongodb.MongoWriteException;
 import com.mongodb.client.*;
 import com.mongodb.client.model.Filters;
+import com.mongodb.client.model.Updates;
 import org.bson.Document;
+import org.bson.conversions.Bson;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.bson.Document;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import static com.mongodb.client.model.Filters.eq;
 import static com.mongodb.client.model.Updates.combine;
@@ -48,6 +49,22 @@ public class UserMongoRepository implements Repository<User> {
 
     @Override
     public User getItemById(UUID id) {
+        MongoCollection<Document> collection = database.getCollection("users");
+
+        Document query = new Document("userId", id);
+        Document userDoc = collection.find(query).first();
+
+        if (userDoc != null) {
+            String name = userDoc.getString("name");
+            String surname = userDoc.getString("surname");
+            List<Document> taskDocs = (List<Document>) userDoc.get("taskList");
+            List<Task> tasks = taskDocs.stream()
+                    .map(doc -> new Task(doc.get("id", UUID.class), doc.getString("name"), doc.getString("description"), id))
+                    .collect(Collectors.toList());
+
+            return new User(name, surname, id, tasks);
+        }
+
         return null;
     }
     @Override
@@ -79,20 +96,33 @@ public class UserMongoRepository implements Repository<User> {
 
     @Override
     public void updateItem(User user) {
-        // update every property of the user (name, surname, id, taskList)
         MongoCollection<Document> collection = database.getCollection("users");
-//        collection.updateOne(eq("userId", user.getId()),
-//                combine(
-//                set("name", user.getName()),
-//                set("surname", user.getSurname()),
-//                set("userId", user.getId()),
-//                set("taskList", user.getTaskList())
-//                ));
+//this peace of code updates whole user
+//        Bson filter = eq("userId", user.getId());
+//        Document newDocument = new Document("name", user.getName())
+//                .append("surname", user.getSurname())
+//                .append("userId", user.getId())
+//                .append("taskList", user.getTaskList().stream()
+//                        .map(task -> new Document("id", task.getId())
+//                                .append("name", task.getName())
+//                                .append("description", task.getDescription())
+//                                .append("userId", task.getUserId()))
+//                        .collect(Collectors.toList()));
+//
+//        collection.replaceOne(filter, newDocument);
 
-        collection.updateOne(eq("userId", user.getId()),
-                        set("taskList", user.getTaskList()));
-
+////////////////////////
+//this peace of code updates only user's tasks
+        Bson filter = eq("userId", user.getId());
+        Bson update = set("taskList", user.getTaskList().stream().map(task -> new Document("id", task.getId())
+                        .append("name", task.getName())
+                        .append("description", task.getDescription())
+                        .append("userId", task.getUserId()))
+                .collect(Collectors.toList()));
+        collection.updateOne(filter, update);
     }
+
+
 
     //not for production
     public void deleteAll(){

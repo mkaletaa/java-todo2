@@ -73,8 +73,6 @@ public class TaskMongoRepository implements Repository<Task> {
         try {
             collection.insertOne(document);
             taskService.addTaskToUser(task);
-            taskService.test(task);
-//            System.out.println(10/2);
         }  catch (MongoWriteException e) {
             e.printStackTrace();
         }
@@ -105,4 +103,4 @@ public class TaskMongoRepository implements Repository<Task> {
 
 
 }
-//TODO: UserMongoRepository
+

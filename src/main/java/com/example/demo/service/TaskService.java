@@ -24,16 +24,18 @@ public class TaskService {
 
     public void addTaskToUser(Task task) {
             User user = userMongoRepository.getItemById(task.getUserId());
-        if(user!=null) {
+
+            //tu chyba zmienić warunek
+        if(user!=null && user.getId()!=null) {
             List<Task> userTasks = user.getTaskList();
             userTasks.add(task);
-//TODO: test tej metody, throw zamist ifa i tworzenie usera W @Before
             User updatedUser = new User(user.getName(), user.getSurname(), user.getId(), userTasks);
             userMongoRepository.updateItem(updatedUser);
         }
+
     }
 
-    public void test(Task task){
+    public void test(){
         System.out.println("Hello World");
     }
 

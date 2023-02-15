@@ -12,6 +12,7 @@ import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.*;
 import org.springframework.test.context.ActiveProfiles;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
@@ -57,10 +58,25 @@ public class UserApiTest {
         assertEquals(HttpStatus.OK, response.getStatusCode(), "Http status should be OK");
         assertNotNull(response.getBody());
         assertThat(response.getBody()).hasSize(3);
+        //TODO więcej asercji
     }
 
-    @Test
-    public void shouldUpdate(){}
+//    @Test
+//    public void shouldUpdate(){
+//        //given
+//        UUID userId = UUID.randomUUID();
+//        List<Task> userTasks = new ArrayList<>();
+//        User user = new User("John", "Doe", userId, userTasks);
+//        userMongoRepository.addItem(user);
+//        Task task = new Task(UUID.randomUUID(), "name", "description", userId);
+//        //when
+//        ResponseEntity<User[]> response = restTemplate.getForEntity("/users", User[].class);
+//
+//        //then
+//        assertEquals(HttpStatus.OK, response.getStatusCode(), "Http status should be OK");
+//        assertNotNull(response.getBody());
+//        System.out.println(response.getBody());
+//    }
 
     @Test
     public void shouldPost() {

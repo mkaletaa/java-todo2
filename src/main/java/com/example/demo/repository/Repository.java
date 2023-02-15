@@ -17,6 +17,4 @@ public interface Repository<T> {
 
     void updateItem(T item);
 
-//TODO: update(item)
-
 }

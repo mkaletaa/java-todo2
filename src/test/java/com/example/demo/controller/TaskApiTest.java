@@ -2,7 +2,9 @@ package com.example.demo.controller;
 
 import com.example.demo.model.Task;
 import com.example.demo.repository.TaskMongoRepository;
+import com.example.demo.repository.UserMongoRepository;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -28,6 +30,14 @@ public class TaskApiTest {
 
     @Autowired
     private TaskMongoRepository taskMongoRepository;
+
+//    @Autowired
+//    private UserMongoRepository userMongoRepository;
+//
+//    @BeforeAll
+//    public void addUser(){
+//        userMongoRepository.addItem();
+//    }
 
     @AfterEach
     public void deleteAll(){
