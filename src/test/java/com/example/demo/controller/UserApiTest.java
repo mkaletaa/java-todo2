@@ -58,25 +58,31 @@ public class UserApiTest {
         assertEquals(HttpStatus.OK, response.getStatusCode(), "Http status should be OK");
         assertNotNull(response.getBody());
         assertThat(response.getBody()).hasSize(3);
-        //TODO więcej asercji
+        assertThat(response.getBody()[0].getName()).isEqualTo("Jan");
+        assertThat(response.getBody()[0].getSurname()).isEqualTo("Kowalski");
+        assertThat(response.getBody()[1].getName()).isEqualTo("Kasia");
+        assertThat(response.getBody()[2].getSurname()).isEqualTo("Kowalczyk");
     }
 
-//    @Test
-//    public void shouldUpdate(){
-//        //given
-//        UUID userId = UUID.randomUUID();
-//        List<Task> userTasks = new ArrayList<>();
-//        User user = new User("John", "Doe", userId, userTasks);
-//        userMongoRepository.addItem(user);
-//        Task task = new Task(UUID.randomUUID(), "name", "description", userId);
-//        //when
-//        ResponseEntity<User[]> response = restTemplate.getForEntity("/users", User[].class);
-//
-//        //then
-//        assertEquals(HttpStatus.OK, response.getStatusCode(), "Http status should be OK");
-//        assertNotNull(response.getBody());
-//        System.out.println(response.getBody());
-//    }
+    @Test
+    public void shouldUpdate(){
+        //given
+        UUID userId = UUID.fromString("bbdef43f-59a1-47fb-9804-f869e2614cbd");
+        List<Task> userTasks = new ArrayList<>();
+        User user = new User("John", "Doe", userId, userTasks);
+        userMongoRepository.addItem(user);
+        Task task = new Task(UUID.randomUUID(), "name", "description", userId);
+
+        //when
+        userMongoRepository.updateItem(user);
+        ResponseEntity<User[]> response = restTemplate.getForEntity("/users", User[].class);
+
+        //then
+        assertEquals(HttpStatus.OK, response.getStatusCode(), "Http status should be OK");
+        assertNotNull(response.getBody());
+        assertThat(response.getBody()[0].getName()).isEqualTo("John");
+        assertThat(response.getBody()[0].getSurname()).isEqualTo("Doe");
+    }
 
     @Test
     public void shouldPost() {

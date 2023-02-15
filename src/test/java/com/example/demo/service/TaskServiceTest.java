@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -36,7 +37,7 @@ class TaskServiceTest {
 
     @AfterEach
     public void deleteAll(){
-//        userMongoRepository.deleteAll();
+        userMongoRepository.deleteAll();
     }
 
     @Test
@@ -51,18 +52,31 @@ class TaskServiceTest {
         Task task = new Task(UUID.randomUUID(), "name", "description", userId);
         //when
         taskService.addTaskToUser(task);
-//        taskService.addTaskToUser(task);
         ResponseEntity<User[]> response = restTemplate.getForEntity("/users", User[].class);
 
         //then
         assertEquals(HttpStatus.OK, response.getStatusCode(), "Http status should be OK");
         assertNotNull(response.getBody());
-        System.out.println(response.getBody()[0].getName());
-        System.out.println(response.getBody()[0].getId());
-//TODO dodatkowe asercje
-        //        assertFalse(response.getBody()[0].getTaskList().isEmpty());
-//        assertThat(response.getBody()[0].getTaskList()).hasSize(1);
+        assertThat(response.getBody()[0].getName()).isEqualTo("John");
+        assertThat(response.getBody()[0].getSurname()).isEqualTo("Doe");
 
+    }
+
+    @Test
+    public void shouldAddTaskToUserWhenUserDoesNotExist(){
+        //given
+        UUID userId = UUID.fromString("bbdef43f-59a1-47fb-9804-f869e2614cbd");
+        List<Task> userTasks = new ArrayList<>();
+//        not adding user
+        Task task = new Task(UUID.randomUUID(), "name", "description", userId);
+        //when
+        taskService.addTaskToUser(task);
+        ResponseEntity<User[]> response = restTemplate.getForEntity("/users", User[].class);
+
+        //then
+//        assertThrows(IllegalStateException.class, () -> taskService.addTaskToUser(task));
+        assertEquals(HttpStatus.OK, response.getStatusCode(), "Http status should be OK");
+        assertThat(response.getBody()).hasSize(0);
 
     }
 

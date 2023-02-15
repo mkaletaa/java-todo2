@@ -114,7 +114,8 @@ public class UserMongoRepository implements Repository<User> {
 ////////////////////////
 //this peace of code updates only user's tasks
         Bson filter = eq("userId", user.getId());
-        Bson update = set("taskList", user.getTaskList().stream().map(task -> new Document("id", task.getId())
+        Bson update = set("taskList", user.getTaskList().stream().
+                map(task -> new Document("id", task.getId())
                         .append("name", task.getName())
                         .append("description", task.getDescription())
                         .append("userId", task.getUserId()))

@@ -23,10 +23,11 @@ public class TaskService {
     }
 
     public void addTaskToUser(Task task) {
-            User user = userMongoRepository.getItemById(task.getUserId());
 
-            //tu chyba zmienić warunek
-        if(user!=null && user.getId()!=null) {
+        if (userMongoRepository.getItemById(task.getUserId()) != null) {
+//            throw new IllegalStateException();
+
+            User user = userMongoRepository.getItemById(task.getUserId());
             List<Task> userTasks = user.getTaskList();
             userTasks.add(task);
             User updatedUser = new User(user.getName(), user.getSurname(), user.getId(), userTasks);
@@ -35,7 +36,7 @@ public class TaskService {
 
     }
 
-    public void test(){
+    public void test() {
         System.out.println("Hello World");
     }
 

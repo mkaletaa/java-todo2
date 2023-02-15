@@ -46,8 +46,10 @@ public class TaskMongoRepository implements Repository<Task> {
         MongoCollection<Document> collection = database.getCollection("tasks");
 
         Document document = collection.find(Filters.eq("id", id)).first();
-        Task task = new Task(document.get("id", UUID.class), document.get("name", String.class), document.get("description", String.class), document.get("userId", UUID.class));
-        System.out.println(task);
+        Task task = new Task(document.get("id", UUID.class),
+                document.get("name", String.class),
+                document.get("description", String.class),
+                document.get("userId", UUID.class));
         return task;
     }
     @Override
@@ -76,12 +78,6 @@ public class TaskMongoRepository implements Repository<Task> {
         }  catch (MongoWriteException e) {
             e.printStackTrace();
         }
-
-//        try{
-//            taskService.addTaskToUser(task);
-//        }  catch (MongoWriteException e) {
-//            e.printStackTrace();
-//        }
     }
 
     @Override

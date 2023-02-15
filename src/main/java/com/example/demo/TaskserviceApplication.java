@@ -12,3 +12,6 @@ public class TaskserviceApplication {
 	}
 
 }
+
+//warunek w TaskService
+//id Usera na froncie
