@@ -34,10 +34,7 @@ public class TaskApiTest {
 //    @Autowired
 //    private UserMongoRepository userMongoRepository;
 //
-//    @BeforeAll
-//    public void addUser(){
-//        userMongoRepository.addItem();
-//    }
+
 
     @AfterEach
     public void deleteAll(){
@@ -157,25 +154,63 @@ public class TaskApiTest {
     @Test
     public void shouldPost() {
         //given
-        UUID userId = UUID.fromString("181d0c94-ed96-41f9-9f76-8ceaa0ce59c2");
         String id = "e499b5df-e341-41c5-bf7a-06bc9c9bc4e9";
         String name = "PostTest";
         String description = "post a task";
+        UUID userId = UUID.fromString("181d0c94-ed96-41f9-9f76-8ceaa0ce59c2");
 
         TaskCreateRequestDTO task = new TaskCreateRequestDTO( name, description, userId);
         //when
         ResponseEntity<TaskResponse> response = restTemplate.postForEntity("/tasks", task, TaskResponse.class);
-
+//        Task gotTask= taskMongoRepository.getItemById(UUID.fromString(id));
         //then
         assertEquals(HttpStatus.OK, response.getStatusCode(), "Http status should be OK");
         assertNotNull(response.getBody());
         assertThat(response.getBody().getName()).isEqualTo(name);
         assertThat(response.getBody().getDescription()).isEqualTo(description);
         assertNotNull(response.getBody().getId());
+
+//        assertThat(gotTask.getId()).isEqualTo(UUID.fromString(id));
+//        assertThat(gotTask.getName()).isEqualTo(name);
+//        assertThat(gotTask.getDescription()).isEqualTo(description);
+//        assertThat(gotTask.getUserId()).isEqualTo(userId);
+    }
+
+
+    @Test
+    public void shouldUpdateTask(){
+        //given
+        String id = "e499b5df-e341-41c5-bf7a-06bc9c9bc4e9";
+        String name = "PutTest";
+        String description = "update a task";
+        UUID userId = UUID.fromString("181d0c94-ed96-41f9-9f76-8ceaa0ce59c2");
+        taskMongoRepository.addItem(new Task(UUID.fromString(id), name, description, userId));
+
+        String updatedName = "updated Name";
+        TaskCreateRequestDTO task = new TaskCreateRequestDTO( updatedName, description, userId);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<TaskCreateRequestDTO> request = new HttpEntity<>(task, headers);
+        //when
+        ResponseEntity<TaskResponse> response = restTemplate.exchange("/tasks/" + id, HttpMethod.PUT, request, TaskResponse.class);
+
+        Task modifiedTask= taskMongoRepository.getItemById(UUID.fromString(id));
+        //then
+        assertEquals(HttpStatus.OK, response.getStatusCode(), "Http status should be OK");
+        assertNotNull(response.getBody());
+        assertThat(response.getBody().getName()).isEqualTo(updatedName);
+        assertThat(response.getBody().getDescription()).isEqualTo(description);
+        assertNotNull(response.getBody().getId());
+
+        assertThat(modifiedTask.getId()).isEqualTo(UUID.fromString(id));
+        assertThat(modifiedTask.getName()).isEqualTo(updatedName);
+        assertThat(modifiedTask.getDescription()).isEqualTo(description);
+        assertThat(modifiedTask.getUserId()).isEqualTo(userId);
     }
 
     @Test
-    public void deleteTaskTest() {
+    public void shouldDeleteTaskTest() {
         //given
         String userId = "181d0c94-ed96-41f9-9f76-8ceaa0ce59c2";
         String id = "f1ecfecd-9e5b-4b5f-abc1-99978da78af1";

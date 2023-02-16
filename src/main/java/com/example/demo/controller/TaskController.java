@@ -66,15 +66,6 @@ public class TaskController {
         return toTaskResponse(taskMongoRepository.getItemByIndex(index));
     }
 
-//    @CrossOrigin(origins = "http://127.0.0.1:5173/")
-//    @PostMapping("/tasks")
-//    public TaskResponse addTask(@RequestBody TaskCreateRequestDTO taskBody) {
-//        UUID userId = UUID.fromString("181d0c94-ed96-41f9-9f76-8ceaa0ce59c2");
-//        Task task = new Task(UUID.randomUUID(), taskBody.getName(), taskBody.getDescription(), userId);
-//        taskMongoRepository.add(task);
-//        return toTaskResponse(task);
-//    }
-
     @CrossOrigin(origins = "http://127.0.0.1:5173/")
     @PostMapping("/tasks")
     public TaskResponse addTask(@RequestBody TaskCreateRequestDTO taskBody) {
@@ -91,6 +82,17 @@ public class TaskController {
         taskMongoRepository.deleteItem(id);
 
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+
+    @CrossOrigin(origins = "http://127.0.0.1:5173/")
+    @PutMapping("/tasks/{id}")
+    public TaskResponse editTask(@PathVariable UUID id, @RequestBody TaskCreateRequestDTO taskBody) {
+
+       Task task = new Task(id, taskBody.getName(), taskBody.getDescription(), taskBody.getUserId());
+        taskMongoRepository.updateItem(task);
+
+        return toTaskResponse(task);
     }
 
     private static TaskResponse toTaskResponse(Task task) {

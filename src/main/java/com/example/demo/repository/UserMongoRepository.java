@@ -91,7 +91,8 @@ public class UserMongoRepository implements Repository<User> {
 
     @Override
     public void deleteItem(UUID id){
-
+        MongoCollection<Document> collection = database.getCollection("users");
+        collection.deleteOne(Filters.eq("userId", id));
     }
 
     @Override

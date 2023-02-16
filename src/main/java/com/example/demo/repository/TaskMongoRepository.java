@@ -6,11 +6,16 @@ import com.mongodb.MongoWriteException;
 import com.mongodb.client.*;
 import com.mongodb.client.model.Filters;
 import org.bson.Document;
+import org.bson.conversions.Bson;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
+
+import static com.mongodb.client.model.Filters.eq;
+import static com.mongodb.client.model.Updates.set;
 
 @org.springframework.stereotype.Repository
 public class TaskMongoRepository implements Repository<Task> {
@@ -88,6 +93,15 @@ public class TaskMongoRepository implements Repository<Task> {
 
     @Override
     public void updateItem(Task task) {
+        MongoCollection<Document> collection = database.getCollection("tasks");
+
+        Document newDocument = new Document("id", task.getId())
+                .append("name", task.getName())
+                .append("description", task.getDescription())
+                .append("userId", task.getUserId());
+
+        Bson filter = Filters.eq("id", task.getId());
+        collection.replaceOne(filter, newDocument);
 
     }
 

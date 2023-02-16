@@ -5,6 +5,7 @@ import com.example.demo.model.User;
 import com.example.demo.repository.TaskMongoRepository;
 import com.example.demo.repository.UserMongoRepository;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -65,6 +66,27 @@ public class UserApiTest {
     }
 
     @Test
+    public void shouldGetUserById() {
+        //given
+        String name = "John";
+        String surname = "Doe";
+        String userId = "181d0c94-ed96-41f9-9f76-8ceaa0ce59c2";
+        List<Task> taskList = new ArrayList<>();
+        User expectedUser = new User(name, surname, UUID.fromString(userId),taskList);
+        userMongoRepository.addItem(expectedUser);
+
+        //when
+        ResponseEntity<UserResponse> response = restTemplate.getForEntity("/users/181d0c94-ed96-41f9-9f76-8ceaa0ce59c2" , UserResponse.class);
+        User actualUser = userMongoRepository.getItemById(UUID.fromString(userId));
+
+        //then
+        assertEquals(HttpStatus.OK, response.getStatusCode(), "Http status should be OK");
+        assertNotNull(response.getBody());
+        assertThat(response.getBody().getName()).isEqualTo(name);
+        assertThat(response.getBody().getSurname()).isEqualTo(surname);
+        assertEquals(expectedUser.getId(), actualUser.getId());
+    }
+    @Test
     public void shouldUpdate(){
         //given
         UUID userId = UUID.fromString("bbdef43f-59a1-47fb-9804-f869e2614cbd");
@@ -102,20 +124,22 @@ public class UserApiTest {
         assertThat(response.getBody().getSurname()).isEqualTo(surname);
     }
 
-//    @Test
-//    public void deleteTaskTest() {
-//        //given
-//        String userId = "181d0c94-ed96-41f9-9f76-8ceaa0ce59c2";
-//        String id = "f1ecfecd-9e5b-4b5f-abc1-99978da78af1";
-//        UUID task1Id = UUID.fromString(id);
-//        Task task = new Task(task1Id, "GetTest", "get tasks by id", UUID.fromString(userId));
+    @Test
+    public void shouldDeleteUserTest() {
+        //given
+        String userId = "181d0c94-ed96-41f9-9f76-8ceaa0ce59c2";
+        String name = "John";
+        String surname = "Doe";
+        List<Task> taskList = null;
+        User user = new User(name, surname, UUID.fromString(userId), taskList);
+        userMongoRepository.addItem(user);
 //        restTemplate.postForEntity("/tasks", task, String.class);
-//
-//        //when
-//        ResponseEntity<Void> response = restTemplate.exchange("/tasks/" + id, HttpMethod.DELETE, new HttpEntity<>(new HttpHeaders()), Void.class);
+
+        //when
+        ResponseEntity<Void> response = restTemplate.exchange("/users/" + userId, HttpMethod.DELETE, new HttpEntity<>(new HttpHeaders()), Void.class);
 //
 //        //then
-//        assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
-//    }
+        assertEquals(HttpStatus.NO_CONTENT, response.getStatusCode());
+    }
 
 }

@@ -13,5 +13,4 @@ public class TaskserviceApplication {
 
 }
 
-//warunek w TaskService
-//id Usera na froncie
+//TODO: updateUser, Remove task from user, modify task to user
