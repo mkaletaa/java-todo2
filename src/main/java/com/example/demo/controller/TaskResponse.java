@@ -6,7 +6,7 @@ public class TaskResponse {
     private final UUID id;
     private final String name;
     private final String description;
-
+//TODO: dodać userId
 
     public TaskResponse(UUID id, String name, String description) {
         this.id = id;

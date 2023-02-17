@@ -2,6 +2,8 @@ package com.example.demo.controller;
 
 import com.example.demo.model.Task;
 import com.example.demo.repository.TaskMongoRepository;
+import com.example.demo.service.TaskService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,10 +17,12 @@ import java.util.stream.Collectors;
 public class TaskController {
 
     private final TaskMongoRepository taskMongoRepository;
+    private final TaskService taskService;
 
     @Autowired
-    public TaskController(TaskMongoRepository taskMongoRepository) {
+    public TaskController(TaskMongoRepository taskMongoRepository, TaskService taskService) {
         this.taskMongoRepository = taskMongoRepository;
+        this.taskService = taskService;
     }
 
 
@@ -68,10 +72,11 @@ public class TaskController {
 
     @CrossOrigin(origins = "http://127.0.0.1:5173/")
     @PostMapping("/tasks")
-    public TaskResponse addTask(@RequestBody TaskCreateRequestDTO taskBody) {
+    public TaskResponse addTask(@Valid @RequestBody TaskCreateRequestDTO taskBody) {
         Task task = new Task(UUID.randomUUID(), taskBody.getName(), taskBody.getDescription(), taskBody.getUserId());
-        taskMongoRepository.addItem(task);
-        return toTaskResponse(task);
+//        taskService.addTaskToUser(taskBody.getUserId(), task);
+//        taskMongoRepository.addItem(task);
+        return toTaskResponse(taskService.addTaskToUser(taskBody.getUserId(), task));
     }
 
 

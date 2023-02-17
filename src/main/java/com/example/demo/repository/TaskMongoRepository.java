@@ -20,16 +20,16 @@ import static com.mongodb.client.model.Updates.set;
 @org.springframework.stereotype.Repository
 public class TaskMongoRepository implements Repository<Task> {
     private final MongoDatabase database;
-    private final TaskService taskService;
+//    private final TaskService taskService;
 
     public MongoDatabase getDatabase() {
         return database;
     }
 
     @Autowired
-    public TaskMongoRepository(MongoDatabase mongoDatabase, TaskService taskService) {
+    public TaskMongoRepository(MongoDatabase mongoDatabase) {
         this.database = mongoDatabase;
-        this.taskService = taskService;
+//        this.taskService = taskService;
     }
 
     @Override
@@ -79,7 +79,7 @@ public class TaskMongoRepository implements Repository<Task> {
 
         try {
             collection.insertOne(document);
-            taskService.addTaskToUser(task);
+//            taskService.addTaskToUser(task);
         }  catch (MongoWriteException e) {
             e.printStackTrace();
         }

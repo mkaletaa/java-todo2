@@ -90,18 +90,24 @@ public class TaskApiTest {
         //when
 
         // Make a GET request to the endpoint
-        ResponseEntity<Task[]> response = restTemplate.getForEntity("/tasks?name=test", Task[].class);
-        Task[] tasks = response.getBody();
+        ResponseEntity<TaskResponse[]> response = restTemplate.getForEntity("/tasks?name=test", TaskResponse[].class);
+        TaskResponse[] tasks = response.getBody();
         List<String> taskNames = Arrays.stream(tasks)
-                .map(Task::getName)
+                .map(TaskResponse::getName)
                 .collect(Collectors.toList());
 
         //then
+
         assertEquals(HttpStatus.OK, response.getStatusCode(), "Http status should be OK");
         assertNotNull(response.getBody());
         assertThat(response.getBody()).hasSize(2);
         assertThat(taskNames.size()).isEqualTo(2);
+        assertThat(response.getBody().length).isEqualTo(2);
+        assertThat(response.getBody()).hasSize(2);
         assertThat(taskNames).doesNotContain("xxx");
+        boolean tasksHaveCorrectName = Arrays.stream(response.getBody())
+                .allMatch(task -> task.getName().equals("test"));
+        assertThat(tasksHaveCorrectName).isTrue();
     }
 
     @Test
@@ -148,6 +154,8 @@ public class TaskApiTest {
         assertThat(response.getBody().getName()).isEqualTo(name);
         assertThat(response.getBody().getDescription()).isEqualTo(description);
         assertNotNull(response.getBody().getId());
+        //TODO: czy zwraca pustą listę jak nie ma taska
+
     }
 
 
