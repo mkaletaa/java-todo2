@@ -1,5 +1,6 @@
 package com.example.demo.service;
 
+import com.example.demo.controller.TaskCreateRequestDTO;
 import com.example.demo.model.Task;
 import com.example.demo.model.User;
 import com.example.demo.repository.TaskMongoRepository;
@@ -36,12 +37,13 @@ public class TaskService {
 //
 //    }
 
-    public Task addTaskToUser(UUID userId, Task task) {
+    public Task addTaskToUser(TaskCreateRequestDTO taskBody) {
+        Task task = new Task(UUID.randomUUID(), taskBody.getName(), taskBody.getDescription(), taskBody.getUserId());
         taskMongoRepository.addItem(task);
-        User user = userMongoRepository.getItemById(userId);
+        User user = userMongoRepository.getItemById(task.getUserId());
         user.getTaskList().add(task);
         userMongoRepository.updateItem(user);
-        //TODO: pobrać name i description i tworzyć tasska tutaj
+        //TODOo: pobrać name i description i tworzyć taska tutaj
         //TODO: unit test
         return task;
     }

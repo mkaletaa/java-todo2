@@ -98,6 +98,16 @@ public class UserMongoRepository implements Repository<User> {
     @Override
     public void updateItem(User user) {
         MongoCollection<Document> collection = database.getCollection("users");
+//this peace of code updates only user's tasks
+        Bson filter = eq("userId", user.getId());
+        Bson update = set("taskList", user.getTaskList().stream().
+                map(task -> new Document("id", task.getId())
+                        .append("name", task.getName())
+                        .append("description", task.getDescription())
+                        .append("userId", task.getUserId()))
+                .collect(Collectors.toList()));
+        collection.updateOne(filter, update);
+////////////////////////
 //this peace of code updates whole user
 //        Bson filter = eq("userId", user.getId());
 //        Document newDocument = new Document("name", user.getName())
@@ -111,17 +121,6 @@ public class UserMongoRepository implements Repository<User> {
 //                        .collect(Collectors.toList()));
 //
 //        collection.replaceOne(filter, newDocument);
-
-////////////////////////
-//this peace of code updates only user's tasks
-        Bson filter = eq("userId", user.getId());
-        Bson update = set("taskList", user.getTaskList().stream().
-                map(task -> new Document("id", task.getId())
-                        .append("name", task.getName())
-                        .append("description", task.getDescription())
-                        .append("userId", task.getUserId()))
-                .collect(Collectors.toList()));
-        collection.updateOne(filter, update);
     }
 
 

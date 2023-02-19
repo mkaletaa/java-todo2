@@ -33,50 +33,33 @@ public class TaskController {
         return toTaskListResponse(taskMongoRepository.getAllItems());
     }
 
-    private static List<TaskResponse> toTaskListResponse(List<Task> taskList) {
-        return taskList.stream()
-                .map(task -> new TaskResponse(task.getId(), task.getName(), task.getDescription()))
-                .collect(Collectors.toList());
-    }
-
-
-    @CrossOrigin(origins = "http://127.0.0.1:5173/")
-    @GetMapping(value = "/tasks", params = "name")
-    public List<TaskResponse> getTasksByName(@RequestParam("name") String name) {
-
-        return toTaskResponseList2(taskMongoRepository.getAllItems(), name);
-    }
-
-    private static List<TaskResponse> toTaskResponseList2(List<Task> taskList, String name) {
-        System.out.println(name);
-        return taskList.stream()
-                .filter(task -> task.getName().equals(name))
-                .map(task -> new TaskResponse(task.getId(), task.getName(), task.getDescription()))
-                .collect(Collectors.toList());
-    }
-
-
     @CrossOrigin(origins = "http://127.0.0.1:5173/")
     @GetMapping("/tasks/{id}")
     public TaskResponse getSingleTaskById(@PathVariable UUID id) {
 
         return toTaskResponse(taskMongoRepository.getItemById(id));
     }
-
     @CrossOrigin(origins = "http://127.0.0.1:5173/")
     @GetMapping(value="/tasks", params = "index")
     public TaskResponse getSingleTask(@RequestParam("index") int index) {
 
         return toTaskResponse(taskMongoRepository.getItemByIndex(index));
     }
+    @CrossOrigin(origins = "http://127.0.0.1:5173/")
+    @GetMapping(value = "/tasks", params = {"name"})
+    public List<TaskResponse> getTasksByName(@RequestParam("name") String name, @RequestParam(value = "size", defaultValue = "-1") int size) {
+
+        return toTaskResponseListName(taskMongoRepository.getAllItems(), name, size);
+    }
+
 
     @CrossOrigin(origins = "http://127.0.0.1:5173/")
     @PostMapping("/tasks")
     public TaskResponse addTask(@Valid @RequestBody TaskCreateRequestDTO taskBody) {
-        Task task = new Task(UUID.randomUUID(), taskBody.getName(), taskBody.getDescription(), taskBody.getUserId());
+//        Task task = new Task(UUID.randomUUID(), taskBody.getName(), taskBody.getDescription(), taskBody.getUserId());
 //        taskService.addTaskToUser(taskBody.getUserId(), task);
 //        taskMongoRepository.addItem(task);
-        return toTaskResponse(taskService.addTaskToUser(taskBody.getUserId(), task));
+        return toTaskResponse(taskService.addTaskToUser(taskBody));
     }
 
 
@@ -102,6 +85,21 @@ public class TaskController {
 
     private static TaskResponse toTaskResponse(Task task) {
         return new TaskResponse(task.getId(), task.getName(), task.getDescription());
+    }
+
+    private static List<TaskResponse> toTaskListResponse(List<Task> taskList) {
+        return taskList.stream()
+                .map(task -> new TaskResponse(task.getId(), task.getName(), task.getDescription()))
+                .collect(Collectors.toList());
+    }
+
+    private static List<TaskResponse> toTaskResponseListName(List<Task> taskList, String name, int size) {
+        System.out.println(name);
+        return taskList.stream()
+                .filter(task -> task.getName().equals(name))
+                .limit(size == -1 ? taskList.size() : size)
+                .map(task -> new TaskResponse(task.getId(), task.getName(), task.getDescription()))
+                .collect(Collectors.toList());
     }
 
 
