@@ -6,9 +6,11 @@ import com.example.demo.repository.UserMongoRepository;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Nested;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
+import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
 import org.springframework.test.context.ActiveProfiles;
 
@@ -18,8 +20,7 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -71,43 +72,86 @@ public class TaskApiTest {
         assertThat(response.getBody()).hasSize(3);
     }
 
-    @Test
-    public void shouldGetTasksByName() {
-        //given
-        String userId = "181d0c94-ed96-41f9-9f76-8ceaa0ce59c2";
-        String[][] idArray = {{"85be177f-5e63-44b5-bddc-894d15a4d26e", "test"},
-                {"bbdef43f-59a1-47fb-9804-f869e2614cbd", "test"},
-                {"74ad803c-d78f-4630-ae0c-7205cf5cb9c5", "xxx"}};
+    @Nested
+    class TestGetByName {
 
-        for (String[] s : idArray) {
-            UUID taskId = UUID.fromString(s[0]);
-            String name = s[1];
-            Task task = new Task(taskId, name, "get all tasks", UUID.fromString(userId));
+        @Test
+        public void shouldGetTasksByName() {
+            //given
+            String userId = "181d0c94-ed96-41f9-9f76-8ceaa0ce59c2";
+            String[][] tasksDataArray = {{"85be177f-5e63-44b5-bddc-894d15a4d26e", "test"},
+                    {"bbdef43f-59a1-47fb-9804-f869e2614cbd", "test"},
+                    {"74ad803c-d78f-4630-ae0c-7205cf5cb9c5", "xxx"}};
+
+            for (String[] s : tasksDataArray) {
+                UUID taskId = UUID.fromString(s[0]);
+                String name = s[1];
+                Task task = new Task(taskId, name, "get all tasks", UUID.fromString(userId));
 //            restTemplate.postForEntity("/tasks", task, String.class);
-            taskMongoRepository.addItem(task);
+                taskMongoRepository.addItem(task);
+            }
+
+            //when
+
+            // Make a GET request to the endpoint
+            ResponseEntity<TaskResponse[]> response = restTemplate.getForEntity("/tasks?name=test", TaskResponse[].class);
+            TaskResponse[] tasks = response.getBody();
+            List<String> taskNames = Arrays.stream(tasks)
+                    .map(TaskResponse::getName)
+                    .collect(Collectors.toList());
+
+            //then
+
+            assertEquals(HttpStatus.OK, response.getStatusCode(), "Http status should be OK");
+            assertNotNull(response.getBody());
+            assertThat(response.getBody()).hasSize(2);
+            assertThat(taskNames.size()).isEqualTo(2);
+            assertThat(response.getBody().length).isEqualTo(2);
+            assertThat(response.getBody()).hasSize(2);
+            assertThat(taskNames).doesNotContain("xxx");
+            boolean tasksHaveCorrectName = Arrays.stream(response.getBody())
+                    .allMatch(task -> task.getName().equals("test"));
+            assertThat(tasksHaveCorrectName).isTrue();
         }
 
-        //when
+        @Test
+        public void shouldGetTasksByNameWithSpecifiedSize() {
+            //given
+            String userId = "181d0c94-ed96-41f9-9f76-8ceaa0ce59c2";
+            String[][] tasksDataArray = {{"85be177f-5e63-44b5-bddc-894d15a4d26e", "test"},
+                    {"bbdef43f-59a1-47fb-9804-f869e2614cbd", "test"},
+                    {"74ad803c-d78f-4630-ae0c-7205cf5cb9c5", "xxx"}};
 
-        // Make a GET request to the endpoint
-        ResponseEntity<TaskResponse[]> response = restTemplate.getForEntity("/tasks?name=test", TaskResponse[].class);
-        TaskResponse[] tasks = response.getBody();
-        List<String> taskNames = Arrays.stream(tasks)
-                .map(TaskResponse::getName)
-                .collect(Collectors.toList());
+            for (String[] s : tasksDataArray) {
+                UUID taskId = UUID.fromString(s[0]);
+                String name = s[1];
+                Task task = new Task(taskId, name, "get all tasks", UUID.fromString(userId));
+//            restTemplate.postForEntity("/tasks", task, String.class);
+                taskMongoRepository.addItem(task);
+            }
 
-        //then
+            //when
 
-        assertEquals(HttpStatus.OK, response.getStatusCode(), "Http status should be OK");
-        assertNotNull(response.getBody());
-        assertThat(response.getBody()).hasSize(2);
-        assertThat(taskNames.size()).isEqualTo(2);
-        assertThat(response.getBody().length).isEqualTo(2);
-        assertThat(response.getBody()).hasSize(2);
-        assertThat(taskNames).doesNotContain("xxx");
-        boolean tasksHaveCorrectName = Arrays.stream(response.getBody())
-                .allMatch(task -> task.getName().equals("test"));
-        assertThat(tasksHaveCorrectName).isTrue();
+            // Make a GET request to the endpoint
+            ResponseEntity<TaskResponse[]> response = restTemplate.getForEntity("/tasks?name=test&size=1", TaskResponse[].class);
+            TaskResponse[] tasks = response.getBody();
+            List<String> taskNames = Arrays.stream(tasks)
+                    .map(TaskResponse::getName)
+                    .collect(Collectors.toList());
+
+            //then
+
+            assertEquals(HttpStatus.OK, response.getStatusCode(), "Http status should be OK");
+            assertNotNull(response.getBody());
+            assertThat(response.getBody()).hasSize(1);
+            assertThat(taskNames.size()).isEqualTo(1);
+            assertThat(response.getBody().length).isEqualTo(1);
+            assertThat(response.getBody()).hasSize(1);
+            assertThat(taskNames).doesNotContain("xxx");
+            boolean tasksHaveCorrectName = Arrays.stream(response.getBody())
+                    .allMatch(task -> task.getName().equals("test"));
+            assertThat(tasksHaveCorrectName).isTrue();
+        }
     }
 
     @Test
@@ -154,9 +198,24 @@ public class TaskApiTest {
         assertThat(response.getBody().getName()).isEqualTo(name);
         assertThat(response.getBody().getDescription()).isEqualTo(description);
         assertNotNull(response.getBody().getId());
-        //TODO: czy zwraca pustą listę jak nie ma taska
-
+        //TODO: sprawdź czy zwraca pustą listę jak nie ma taska
     }
+
+//    @Test
+//    public void shouldReturnEmptyListIfNoTaskForIndex() {
+//        //given
+//        String index = "999"; // zakładamy, że indeks nie istnieje w bazie danych
+//
+//        //when
+//        ResponseEntity<TaskResponse> response = restTemplate.getForEntity("/tasks?index=" + index, TaskResponse.class);
+//
+//        //then
+//        assertEquals(HttpStatus.OK, response.getStatusCode());
+//        assertNotNull(response.getBody());
+//        System.out.println(response.getBody().hasSize());
+////        assertThat(response.getBody()).hasSize(0);
+//
+//    }
 
 
     @Test

@@ -1,5 +1,6 @@
 package com.example.demo.service;
 
+import com.example.demo.controller.TaskCreateRequestDTO;
 import com.example.demo.model.Task;
 import com.example.demo.model.User;
 import com.example.demo.repository.TaskMongoRepository;
@@ -49,7 +50,7 @@ class TaskServiceTest {
         userMongoRepository.addItem(user);
 
 
-        Task task = new Task(UUID.randomUUID(), "name", "description", userId);
+        TaskCreateRequestDTO task = new TaskCreateRequestDTO("name", "description", userId);
         //when
         taskService.addTaskToUser(task);
         ResponseEntity<User[]> response = restTemplate.getForEntity("/users", User[].class);
@@ -59,7 +60,8 @@ class TaskServiceTest {
         assertNotNull(response.getBody());
         assertThat(response.getBody()[0].getName()).isEqualTo("John");
         assertThat(response.getBody()[0].getSurname()).isEqualTo("Doe");
-
+//        assertThat(response.getBody()[0].getTaskList().length).isEqualTo(1);
+        System.out.println(response.getBody()[0].getTaskList());
     }
 
     @Test
@@ -68,7 +70,8 @@ class TaskServiceTest {
         UUID userId = UUID.fromString("bbdef43f-59a1-47fb-9804-f869e2614cbd");
         List<Task> userTasks = new ArrayList<>();
 //        not adding user
-        Task task = new Task(UUID.randomUUID(), "name", "description", userId);
+        TaskCreateRequestDTO task = new TaskCreateRequestDTO("name", "description", userId);
+
         //when
         taskService.addTaskToUser(task);
         ResponseEntity<User[]> response = restTemplate.getForEntity("/users", User[].class);

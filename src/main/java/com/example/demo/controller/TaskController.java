@@ -52,6 +52,16 @@ public class TaskController {
         return toTaskResponseListName(taskMongoRepository.getAllItems(), name, size);
     }
 
+//    @GetMapping("/users/{id}/tasks")
+//    public List<TaskResponse> getTasksByUserId(@PathVariable UUID id) {
+//        return toTaskListResponse(taskMongoRepository.getItemById(id));
+//    }
+//
+//    @CrossOrigin(origins = "http://127.0.0.1:5173/")
+//    @PostMapping("/users/{id}/tasks")
+//    public TaskResponse addTasksByUserId(@PathVariable UUID id) {
+//        return toTaskResponse(taskMongoRepository.getItemById(id));
+//    }
 
     @CrossOrigin(origins = "http://127.0.0.1:5173/")
     @PostMapping("/tasks")

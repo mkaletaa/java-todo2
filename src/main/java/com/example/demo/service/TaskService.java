@@ -40,11 +40,15 @@ public class TaskService {
     public Task addTaskToUser(TaskCreateRequestDTO taskBody) {
         Task task = new Task(UUID.randomUUID(), taskBody.getName(), taskBody.getDescription(), taskBody.getUserId());
         taskMongoRepository.addItem(task);
-        User user = userMongoRepository.getItemById(task.getUserId());
-        user.getTaskList().add(task);
-        userMongoRepository.updateItem(user);
+
+        if (userMongoRepository.getItemById(task.getUserId()) != null) {
+
+            User user = userMongoRepository.getItemById(task.getUserId());
+            user.getTaskList().add(task);
+            userMongoRepository.updateItem(user);
+        }
         //TODOo: pobrać name i description i tworzyć taska tutaj
-        //TODO: unit test
+        ///TODO: unit test
         return task;
     }
 
