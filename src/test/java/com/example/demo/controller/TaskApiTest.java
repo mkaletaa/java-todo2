@@ -223,7 +223,7 @@ public class TaskApiTest {
         //given
         String id = "e499b5df-e341-41c5-bf7a-06bc9c9bc4e9";
         String name = "PostTest";
-        String description = "post a task";
+        String description = "m";
         UUID userId = UUID.fromString("181d0c94-ed96-41f9-9f76-8ceaa0ce59c2");
 
         TaskCreateRequestDTO task = new TaskCreateRequestDTO( name, description, userId);

@@ -1,5 +1,6 @@
 package com.example.demo.controller;
 
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
 import java.util.UUID;
@@ -8,6 +9,8 @@ public class TaskCreateRequestDTO {
 
     @NotNull
     private final String name;
+
+    @NotBlank
     private final String description;
     private final UUID userId;
 

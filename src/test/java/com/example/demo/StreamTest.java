@@ -1,25 +1,31 @@
 package com.example.demo;
 
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EmptySource;
+import org.junit.jupiter.params.provider.NullSource;
+import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@ActiveProfiles(value="test")
+@ActiveProfiles(value = "test")
 public class StreamTest {
 
-    private char returnMaxChar(String text){
+    private char returnMaxChar(String text) {
 
         if (text == null) {
             throw new IllegalArgumentException("Tekst nie może być null");
+        }
+
+        if (text.isEmpty()) {
+            throw new IllegalArgumentException("Tekst nie może być pusty");
         }
 
 
@@ -35,7 +41,7 @@ public class StreamTest {
                 .stream()
                 //para <key, maxVal>
                 .max(Map.Entry.comparingByValue())
-                .map(entry->entry.getKey())
+                .map(entry -> entry.getKey())
                 .orElseThrow();
 
 //        char character = maxEntry.get().getKey();
@@ -48,7 +54,7 @@ public class StreamTest {
 
 
     @Test
-    public void shouldReturnCharWhenString(){
+    public void shouldReturnCharWhenString() {
         //given
         String text1 = "SomeLongStringForTestingAStream";
         String text2 = "s";
@@ -66,8 +72,48 @@ public class StreamTest {
         assertEquals(' ', ch4);
     }
 
+    @ParameterizedTest
+    @ValueSource(strings = {"SomeLongStringForTestingAStream", "s", "32156vgfc^%$&^^", " a b c d e "})
+    public void shouldReturnMaxChar(String text) {
+        // when
+        char maxChar = returnMaxChar(text);
+
+        // then
+        switch (text) {
+            case "SomeLongStringForTestingAStream":
+                assertEquals('e', maxChar);
+                break;
+            case "s":
+                assertEquals('s', maxChar);
+                break;
+            case "32156vgfc^%$&^^":
+                assertEquals('^', maxChar);
+                break;
+            case " a b c d e ":
+                assertEquals(' ', maxChar);
+                break;
+            default:
+                fail("Invalid input");
+        }
+    }
+
+    @ParameterizedTest
+    @NullSource
+    public void shouldThrowExceptionWhenNull(String text) {
+        // then
+        assertThrows(IllegalArgumentException.class, () -> returnMaxChar(text));
+    }
+
+    @ParameterizedTest
+    @EmptySource
+    public void shouldThrowExceptionWhenEmpty(String text) {
+        assertThrows(IllegalArgumentException.class, () -> returnMaxChar(text));
+    }
+
+
+
     @Test
-    public void shouldReturnCharWhenNotString(){
+    public void shouldReturnCharWhenNotString() {
         //given
         int text1 = 5;
         char text2 = 'd';
@@ -80,7 +126,7 @@ public class StreamTest {
 //        char ch3 = returnMaxChar(text3);
 //        char ch4 = returnMaxChar(text4);
         //when then
-        Assertions.assertThrows(IllegalArgumentException.class, () -> returnMaxChar(null));
+        assertThrows(IllegalArgumentException.class, () -> returnMaxChar(null));
 //        assertEquals('e', ch1);
 //        assertEquals('s', ch2);
 //        assertEquals('^', ch3);
