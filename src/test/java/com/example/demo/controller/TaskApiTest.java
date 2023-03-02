@@ -198,7 +198,7 @@ public class TaskApiTest {
         assertThat(response.getBody().getName()).isEqualTo(name);
         assertThat(response.getBody().getDescription()).isEqualTo(description);
         assertNotNull(response.getBody().getId());
-        //TODO: sprawdź czy zwraca pustą listę jak nie ma taska
+
     }
 
 //    @Test

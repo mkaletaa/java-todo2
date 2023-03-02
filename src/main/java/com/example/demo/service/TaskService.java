@@ -47,8 +47,8 @@ public class TaskService {
             user.getTaskList().add(task);
             userMongoRepository.updateItem(user);
         }
-        //TODOo: pobrać name i description i tworzyć taska tutaj
-        ///TODO: unit test
+
+
         return task;
     }
 

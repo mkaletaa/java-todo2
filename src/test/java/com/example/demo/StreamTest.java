@@ -16,32 +16,34 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @ActiveProfiles(value="test")
 public class StreamTest {
 
-    private Character returnMaxChar(String text){
+    private char returnMaxChar(String text){
 
         if (text == null) {
             throw new IllegalArgumentException("Tekst nie może być null");
         }
 
 
-        Optional<Map.Entry<Character, Long>> maxEntry = text.chars()
+        return text.chars()
                 .mapToObj(c -> (char) c)
                 //zamiana stringa na listę znaków
-                .collect(Collectors.toList())
-                .stream()
+//                .collect(Collectors.toList())
+//                .stream()
                 //zamiana na mapę <znak, liczbaWystąpień>
                 .collect(Collectors.groupingBy(n -> n, Collectors.counting()))
                 //zamiana na set
                 .entrySet()
                 .stream()
                 //para <key, maxVal>
-                .max(Map.Entry.comparingByValue());
+                .max(Map.Entry.comparingByValue())
+                .map(entry->entry.getKey())
+                .orElseThrow();
 
-        char character = maxEntry.get().getKey();
-        Long nr = maxEntry.get().getValue();
+//        char character = maxEntry.get().getKey();
+//        Long nr = maxEntry.get().getValue();
 
-        System.out.println("Dla Stringa " + text + " najczęściej występujący znak to '" + character + "' który wsytąpił " + nr + " razy.");
+//        System.out.println("Dla Stringa " + text + " najczęściej występujący znak to '" + character + "' który wsytąpił " + nr + " razy.");
 
-        return character;
+
     }
 
 
