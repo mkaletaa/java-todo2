@@ -4,6 +4,7 @@ import com.example.demo.model.Task;
 import com.example.demo.model.User;
 import com.example.demo.repository.TaskMongoRepository;
 import com.example.demo.repository.UserMongoRepository;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -45,7 +46,7 @@ public class UserController {
 
     @CrossOrigin(origins = "http://127.0.0.1:5173/")
     @PostMapping("/users")
-    public UserResponse addUser(@RequestBody UserCreateRequestDTO userBody) {
+    public UserResponse addUser(@Valid @RequestBody UserCreateRequestDTO userBody) {
         User user = new User(userBody.getName(),
                 userBody.getSurname(),
                 UUID.randomUUID(),

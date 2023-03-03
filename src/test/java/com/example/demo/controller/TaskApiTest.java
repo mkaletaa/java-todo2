@@ -24,7 +24,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@ActiveProfiles(value="test")
+@ActiveProfiles(value = "test")
 public class TaskApiTest {
     @Autowired
     private TestRestTemplate restTemplate;
@@ -38,7 +38,7 @@ public class TaskApiTest {
 
 
     @AfterEach
-    public void deleteAll(){
+    public void deleteAll() {
         taskMongoRepository.deleteAll();
         ////
 //        MongoCollection<Document> collection = taskMongoRepository.getDatabase().getCollection("tasks");
@@ -75,9 +75,7 @@ public class TaskApiTest {
     @Nested
     class TestGetByName {
 
-        @Test
-        public void shouldGetTasksByName() {
-            //given
+        public void given() {
             String userId = "181d0c94-ed96-41f9-9f76-8ceaa0ce59c2";
             String[][] tasksDataArray = {{"85be177f-5e63-44b5-bddc-894d15a4d26e", "test"},
                     {"bbdef43f-59a1-47fb-9804-f869e2614cbd", "test"},
@@ -90,6 +88,12 @@ public class TaskApiTest {
 //            restTemplate.postForEntity("/tasks", task, String.class);
                 taskMongoRepository.addItem(task);
             }
+        }
+
+        @Test
+        public void shouldGetTasksByName() {
+            //given
+            given();
 
             //when
 
@@ -117,18 +121,7 @@ public class TaskApiTest {
         @Test
         public void shouldGetTasksByNameWithSpecifiedSize() {
             //given
-            String userId = "181d0c94-ed96-41f9-9f76-8ceaa0ce59c2";
-            String[][] tasksDataArray = {{"85be177f-5e63-44b5-bddc-894d15a4d26e", "test"},
-                    {"bbdef43f-59a1-47fb-9804-f869e2614cbd", "test"},
-                    {"74ad803c-d78f-4630-ae0c-7205cf5cb9c5", "xxx"}};
-
-            for (String[] s : tasksDataArray) {
-                UUID taskId = UUID.fromString(s[0]);
-                String name = s[1];
-                Task task = new Task(taskId, name, "get all tasks", UUID.fromString(userId));
-//            restTemplate.postForEntity("/tasks", task, String.class);
-                taskMongoRepository.addItem(task);
-            }
+            given();
 
             //when
 
@@ -152,6 +145,28 @@ public class TaskApiTest {
                     .allMatch(task -> task.getName().equals("test"));
             assertThat(tasksHaveCorrectName).isTrue();
         }
+
+        @Test
+        public void shoulReturnEmptyTab() {
+            //given
+            given();
+
+            //when
+
+            // Make a GET request to the endpoint
+            ResponseEntity<TaskResponse[]> response = restTemplate.getForEntity("/tasks?name=name&size=1", TaskResponse[].class);
+            TaskResponse[] tasks = response.getBody();
+            List<String> taskNames = Arrays.stream(tasks)
+                    .map(TaskResponse::getName)
+                    .collect(Collectors.toList());
+
+            //then
+
+            assertEquals(HttpStatus.OK, response.getStatusCode(), "Http status should be OK");
+            assertNotNull(response.getBody());
+            assertThat(response.getBody()).hasSize(0);
+
+        }
     }
 
     @Test
@@ -165,7 +180,7 @@ public class TaskApiTest {
         taskMongoRepository.addItem(expectedTask);
 
         //when
-        ResponseEntity<TaskResponse> response = restTemplate.getForEntity("/tasks/f1ecfecd-9e5b-4b5f-abc1-99978da78af1" , TaskResponse.class);
+        ResponseEntity<TaskResponse> response = restTemplate.getForEntity("/tasks/f1ecfecd-9e5b-4b5f-abc1-99978da78af1", TaskResponse.class);
         Task actualTask = taskMongoRepository.getItemById(taskId);
 
         //then
@@ -226,7 +241,7 @@ public class TaskApiTest {
         String description = "m";
         UUID userId = UUID.fromString("181d0c94-ed96-41f9-9f76-8ceaa0ce59c2");
 
-        TaskCreateRequestDTO task = new TaskCreateRequestDTO( name, description, userId);
+        TaskCreateRequestDTO task = new TaskCreateRequestDTO(name, description, userId);
         //when
         ResponseEntity<TaskResponse> response = restTemplate.postForEntity("/tasks", task, TaskResponse.class);
 //        Task gotTask= taskMongoRepository.getItemById(UUID.fromString(id));
@@ -237,15 +252,26 @@ public class TaskApiTest {
         assertThat(response.getBody().getDescription()).isEqualTo(description);
         assertNotNull(response.getBody().getId());
 
-//        assertThat(gotTask.getId()).isEqualTo(UUID.fromString(id));
-//        assertThat(gotTask.getName()).isEqualTo(name);
-//        assertThat(gotTask.getDescription()).isEqualTo(description);
-//        assertThat(gotTask.getUserId()).isEqualTo(userId);
     }
 
+    @Test
+    public void shouldreturn400ifNameNull() {
+        //given
+        String id = "e499b5df-e341-41c5-bf7a-06bc9c9bc4e9";
+        String name = null;
+        String description = "m";
+        UUID userId = UUID.fromString("181d0c94-ed96-41f9-9f76-8ceaa0ce59c2");
+        TaskCreateRequestDTO task = new TaskCreateRequestDTO(name, description, userId);
+
+        //when
+        ResponseEntity<TaskResponse> response = restTemplate.postForEntity("/tasks", task, TaskResponse.class);
+
+        //then
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode(), "Http status should not be OK");
+    }
 
     @Test
-    public void shouldUpdateTask(){
+    public void shouldUpdateTask() {
         //given
         String id = "e499b5df-e341-41c5-bf7a-06bc9c9bc4e9";
         String name = "PutTest";
@@ -254,7 +280,7 @@ public class TaskApiTest {
         taskMongoRepository.addItem(new Task(UUID.fromString(id), name, description, userId));
 
         String updatedName = "updated Name";
-        TaskCreateRequestDTO task = new TaskCreateRequestDTO( updatedName, description, userId);
+        TaskCreateRequestDTO task = new TaskCreateRequestDTO(updatedName, description, userId);
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
@@ -262,7 +288,7 @@ public class TaskApiTest {
         //when
         ResponseEntity<TaskResponse> response = restTemplate.exchange("/tasks/" + id, HttpMethod.PUT, request, TaskResponse.class);
 
-        Task modifiedTask= taskMongoRepository.getItemById(UUID.fromString(id));
+        Task modifiedTask = taskMongoRepository.getItemById(UUID.fromString(id));
         //then
         assertEquals(HttpStatus.OK, response.getStatusCode(), "Http status should be OK");
         assertNotNull(response.getBody());

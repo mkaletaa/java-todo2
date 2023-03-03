@@ -1,10 +1,14 @@
 package com.example.demo.controller;
 
+import jakarta.validation.constraints.NotEmpty;
+
 import java.util.Map;
 import java.util.UUID;
 
 public class UserCreateRequestDTO {
+    @NotEmpty
     private final String name;
+    @NotEmpty
     private final String surname;
 //    private final Map<UUID, String> taskList;
 
